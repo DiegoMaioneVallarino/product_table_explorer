@@ -1,0 +1,5 @@
+.explorer-panel {
+    background: #111111;
+    border-right: 2px solid #ffffff08;
+    z-index: 2;
+}
