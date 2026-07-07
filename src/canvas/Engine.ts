@@ -1,6 +1,10 @@
-import { Camera } from './Camera';
+import { Explorer } from '../core/Explorer';
 import { Renderer } from './Renderer';
 import { Input } from './Input';
+
+
+
+
 
 export class Engine {
 
@@ -10,14 +14,14 @@ export class Engine {
 
   constructor(
     canvas: HTMLCanvasElement,
-    private camera: Camera
-  ) {
+    private explorer: Explorer
+){
 
-    this.renderer = new Renderer(canvas, camera);
+    this.renderer = new Renderer(canvas, explorer.camera, explorer.table);
 
     this.input = new Input(
         canvas,
-        camera
+        explorer.camera
     );
 
   }

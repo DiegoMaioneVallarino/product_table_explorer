@@ -1,39 +1,39 @@
 import { useEffect, useRef } from 'react';
 
-import { Camera } from '../../../canvas/Camera';
 import { Engine } from '../../../canvas/Engine';
+import { Explorer } from '../../../core/Explorer';
 
 interface NumberCanvasProps {
-  camera: Camera;
+    explorer: Explorer;
 }
 
-function NumberCanvas({ camera }: NumberCanvasProps) {
+function NumberCanvas({ explorer }: NumberCanvasProps) {
 
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+    const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  useEffect(() => {
+    useEffect(() => {
 
-    if (!canvasRef.current) return;
+        if (!canvasRef.current) return;
 
-    const engine = new Engine(
-      canvasRef.current,
-      camera
+        const engine = new Engine(
+            canvasRef.current,
+            explorer
+        );
+
+        engine.start();
+
+        return () => {
+            engine.stop();
+        };
+
+    }, [explorer]);
+
+    return (
+        <canvas
+            ref={canvasRef}
+            className="number-canvas"
+        />
     );
-
-    engine.start();
-
-    return () => {
-      engine.stop();
-    };
-
-  }, [camera]);
-
-  return (
-    <canvas
-      ref={canvasRef}
-      className="number-canvas"
-    />
-  );
 
 }
 

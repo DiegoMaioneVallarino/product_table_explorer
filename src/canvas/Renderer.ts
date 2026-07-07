@@ -10,19 +10,20 @@ export class Renderer {
   private ctx: CanvasRenderingContext2D;
 
   private camera: Camera;
+  private table: ProductTable;
 
-  private table = new ProductTable();
 
   private unsubscribe?: () => void;
 
   constructor(
     canvas: HTMLCanvasElement,
-    camera: Camera
+    camera: Camera,
+    table: ProductTable
   ) {
 
     this.canvas = canvas;
     this.camera = camera;
-
+    this.table = table;
     const ctx = canvas.getContext('2d');
 
     if (!ctx) {
@@ -36,6 +37,47 @@ export class Renderer {
     });
 
   }
+  private drawCell(cell: ProductCell): void {
+
+    this.drawCellBorder(cell);
+
+    if (this.camera.showNumbers) {
+
+        this.drawCellLabel(cell);
+
+    }
+
+}
+
+private drawCellBorder(cell: ProductCell): void {
+
+  this.ctx.lineWidth = 1;
+
+  this.ctx.strokeStyle =
+      cell.isPerfectSquare
+          ? "#D4AF37"
+          : "#333";
+
+  this.ctx.strokeRect(
+
+      this.camera.cellLeft(cell.column),
+      this.camera.cellTop(cell.row),
+
+      this.camera.cellSize,
+      this.camera.cellSize
+
+  );
+
+}
+  private drawVisibleCells(): void {
+
+    this.forEachVisibleCell((cell) => {
+
+        this.drawCell(cell);
+
+    });
+
+}
 
   public render(): void {
 
@@ -43,12 +85,7 @@ export class Renderer {
 
     this.clear();
 
-    this.drawCells();
-
-    if (this.camera.showNumbers) {
-      this.drawNumbers();
-    }
-
+    this.drawVisibleCells();
   }
 
   private resize(): void {
@@ -73,54 +110,26 @@ export class Renderer {
 
   }
 
-  private drawCells(): void {
 
-    this.ctx.lineWidth = 1;
+  private drawCellLabel(cell: ProductCell): void {
 
-    this.forEachVisibleCell((cell) => {
+    this.ctx.fillStyle = "#ddd";
 
-      this.ctx.strokeStyle =
-        cell.isPerfectSquare
-          ? '#d4af37'
-          : '#333';
-
-      this.ctx.strokeRect(
-
-        this.camera.cellLeft(cell.column),
-        this.camera.cellTop(cell.row),
-
-        this.camera.cellSize,
-        this.camera.cellSize
-
-      );
-
-    });
-
-  }
-
-  private drawNumbers(): void {
-
-    this.ctx.fillStyle = '#ddd';
-
-    this.ctx.textAlign = 'center';
-    this.ctx.textBaseline = 'middle';
+    this.ctx.textAlign = "center";
+    this.ctx.textBaseline = "middle";
 
     this.ctx.font = `${this.camera.fontSize}px Arial`;
 
-    this.forEachVisibleCell((cell) => {
-
-      this.ctx.fillText(
+    this.ctx.fillText(
 
         cell.screenLabel,
 
         this.camera.cellCenterX(cell.column),
         this.camera.cellCenterY(cell.row)
 
-      );
+    );
 
-    });
-
-  }
+}
 
   private forEachVisibleCell(
     callback: (cell: ProductCell) => void

@@ -1,14 +1,16 @@
 import { useEffect, useRef } from 'react';
 
-import { Camera } from '../../../canvas/Camera';
 import { AxisRenderer } from '../../../canvas/AxisRenderer';
 
+import { Explorer } from '../../../core/Explorer';
+
 interface AxisTopProps {
-  camera: Camera;
+    explorer: Explorer;
 }
 
-function AxisTop({ camera }: AxisTopProps) {
+function AxisTop({ explorer }: AxisTopProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const camera = explorer.camera
 
   useEffect(() => {
 
@@ -16,12 +18,12 @@ function AxisTop({ camera }: AxisTopProps) {
 
     const renderer = new AxisRenderer(
         canvasRef.current,
-        camera
+        explorer.camera
     );
 
     renderer.renderHorizontal();
 
-    const unsubscribe = camera.onChange(() => {
+    const unsubscribe = explorer.camera.onChange(() => {
         renderer.renderHorizontal();
     });
 

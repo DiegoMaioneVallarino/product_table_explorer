@@ -1,15 +1,14 @@
 import { useEffect, useRef } from 'react';
 
-import { Camera } from '../../../canvas/Camera';
 import { AxisRenderer } from '../../../canvas/AxisRenderer';
+import { Explorer } from '../../../core/Explorer';
 
 interface AxisLeftProps {
-  camera: Camera;
+    explorer: Explorer;
 }
-
-function AxisLeft({ camera }: AxisLeftProps) {
+function AxisLeft({ explorer }: AxisLeftProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-
+const camera = explorer.camera
   useEffect(() => {
 
     if (!canvasRef.current) return;

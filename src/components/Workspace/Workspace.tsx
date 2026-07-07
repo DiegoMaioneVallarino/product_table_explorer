@@ -2,7 +2,8 @@ import './Workspace.css';
 
 import { useMemo } from 'react';
 
-import { Camera } from '../../canvas/Camera';
+import { Explorer } from '../../core/Explorer';
+
 
 import AxisTop from './AxisTop/AxisTop';
 import AxisLeft from './AxisLeft/AxisLeft';
@@ -10,18 +11,20 @@ import NumberCanvas from './NumberCanvas/NumberCanvas';
 
 function Workspace() {
 
-    const camera = useMemo(() => new Camera(), []);
-
+    const explorer = useMemo(
+        () => new Explorer(),
+        []
+    );
     return (
         <div className="workspace">
 
             <div className="corner" />
 
-            <AxisTop camera={camera} />
+            <AxisTop explorer={explorer} />
 
-            <AxisLeft camera={camera} />
+            <AxisLeft explorer={explorer} />
 
-            <NumberCanvas camera={camera} />
+            <NumberCanvas explorer={explorer} />
 
         </div>
     );
