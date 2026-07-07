@@ -1,12 +1,25 @@
 import { Camera } from './Camera';
+import { ProductTable } from '../math/ProductTable';
+import { ProductCell } from '../math/ProductCell';
+
 
 export class Renderer {
+
   private canvas: HTMLCanvasElement;
+
   private ctx: CanvasRenderingContext2D;
 
   private camera: Camera;
 
-  constructor(canvas: HTMLCanvasElement, camera: Camera) {
+  private table = new ProductTable();
+
+  private unsubscribe?: () => void;
+
+  constructor(
+    canvas: HTMLCanvasElement,
+    camera: Camera
+  ) {
+
     this.canvas = canvas;
     this.camera = camera;
 
@@ -17,54 +30,136 @@ export class Renderer {
     }
 
     this.ctx = ctx;
+
+    this.unsubscribe = this.camera.onChange(() => {
+      this.render();
+    });
+
   }
-    render() {
-      this.resize();
-  
-      this.clear();
-  
-      this.drawGrid();
-    }
-  
-    private resize() {
-      const rect = this.canvas.getBoundingClientRect();
-  
-      this.canvas.width = rect.width;
-      this.canvas.height = rect.height;
-    }
-  
-    private clear() {
-      this.ctx.fillStyle = '#111';
-      this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-    }
-  
-    private drawGrid() {
 
-        const cellSize = this.camera.cellSize;
-    
-        this.ctx.strokeStyle = '#333';
-        this.ctx.lineWidth = 1;
-    
-        const cols = Math.ceil(this.canvas.width / cellSize);
-        const rows = Math.ceil(this.canvas.height / cellSize);
-    
-        for (let row = 0; row < rows; row++) {
-            for (let col = 0; col < cols; col++) {
-    
-                this.ctx.strokeRect(
-                    this.camera.worldToScreenX(col),
-                    this.camera.worldToScreenY(row),
-                    cellSize,
-                    cellSize
-                );
-    
-            }
-        }
-    
+  public render(): void {
+
+    this.resize();
+
+    this.clear();
+
+    this.drawCells();
+
+    if (this.camera.showNumbers) {
+      this.drawNumbers();
     }
 
-    public redraw(): void {
-        this.render();
+  }
+
+  private resize(): void {
+
+    const rect = this.canvas.getBoundingClientRect();
+
+    this.canvas.width = rect.width;
+    this.canvas.height = rect.height;
+
+  }
+
+  private clear(): void {
+
+    this.ctx.fillStyle = '#111';
+
+    this.ctx.fillRect(
+      0,
+      0,
+      this.canvas.width,
+      this.canvas.height
+    );
+
+  }
+
+  private drawCells(): void {
+
+    this.ctx.lineWidth = 1;
+
+    this.forEachVisibleCell((cell) => {
+
+      this.ctx.strokeStyle =
+        cell.isPerfectSquare
+          ? '#d4af37'
+          : '#333';
+
+      this.ctx.strokeRect(
+
+        this.camera.cellLeft(cell.column),
+        this.camera.cellTop(cell.row),
+
+        this.camera.cellSize,
+        this.camera.cellSize
+
+      );
+
+    });
+
+  }
+
+  private drawNumbers(): void {
+
+    this.ctx.fillStyle = '#ddd';
+
+    this.ctx.textAlign = 'center';
+    this.ctx.textBaseline = 'middle';
+
+    this.ctx.font = `${this.camera.fontSize}px Arial`;
+
+    this.forEachVisibleCell((cell) => {
+
+      this.ctx.fillText(
+
+        cell.screenLabel,
+
+        this.camera.cellCenterX(cell.column),
+        this.camera.cellCenterY(cell.row)
+
+      );
+
+    });
+
+  }
+
+  private forEachVisibleCell(
+    callback: (cell: ProductCell) => void
+  ): void {
+  
+      const firstCol = this.camera.firstVisibleColumn();
+      const firstRow = this.camera.firstVisibleRow();
+  
+      const cols = this.camera.visibleColumns(this.canvas.width);
+      const rows = this.camera.visibleRows(this.canvas.height);
+  
+      for (let row = firstRow; row < firstRow + rows; row++) {
+  
+          for (let col = firstCol; col < firstCol + cols; col++) {
+  
+              const cell = this.table.getCell(row, col);
+  
+              if (!cell.isVisible) {
+                  continue;
+              }
+  
+              callback(cell);
+  
+          }
+  
       }
-      
+  
   }
+
+  public redraw(): void {
+
+    this.render();
+
+  }
+
+  public destroy(): void {
+
+    this.unsubscribe?.();
+
+  }
+
+}

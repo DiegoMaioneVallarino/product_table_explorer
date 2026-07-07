@@ -17,3 +17,25 @@
 
     display: block;
 }
+
+.axis-top {
+
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    background: #222;
+
+}
+
+.axis-left {
+
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    background: #222;
+
+}
