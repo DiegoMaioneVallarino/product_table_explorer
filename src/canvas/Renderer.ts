@@ -1,5 +1,4 @@
-import { Camera } from './Camera';
-import { ProductTable } from '../math/ProductTable';
+import { Explorer } from '../core/Explorer';
 import { ProductCell } from '../math/ProductCell';
 
 
@@ -9,54 +8,149 @@ export class Renderer {
 
   private ctx: CanvasRenderingContext2D;
 
-  private camera: Camera;
-  private table: ProductTable;
+  private explorer: Explorer;
 
 
-  private unsubscribe?: () => void;
 
   constructor(
     canvas: HTMLCanvasElement,
-    camera: Camera,
-    table: ProductTable
+    explorer: Explorer
   ) {
-
+    
+  
+  this.unsubscribeSelection = explorer.selection.onChange(() => {
+      this.render();
+  });
     this.canvas = canvas;
-    this.camera = camera;
-    this.table = table;
-    const ctx = canvas.getContext('2d');
+    this.explorer = explorer;
+  
+    const ctx = canvas.getContext("2d");
 
     if (!ctx) {
-      throw new Error('No se pudo obtener el contexto 2D.');
+        throw new Error("No se pudo obtener el contexto 2D.");
     }
 
     this.ctx = ctx;
 
-    this.unsubscribe = this.camera.onChange(() => {
-      this.render();
+    this.unsubscribeCamera = this.camera.onChange(() => {
+        this.render();
     });
 
+    this.unsubscribeSelection = this.selection.onChange(() => {
+        this.render();
+    });
+
+  
+
   }
-  private drawCell(cell: ProductCell): void {
+  
+  private drawHighlightedBackground(cell: ProductCell): void {
 
-    this.drawCellBorder(cell);
+    this.ctx.fillStyle = "rgba(70,120,255,0.18)";
 
-    if (this.camera.showNumbers) {
-
-        this.drawCellLabel(cell);
-
-    }
+    this.ctx.fillRect(
+        this.camera.cellLeft(cell.column),
+        this.camera.cellTop(cell.row),
+        this.camera.cellSize,
+        this.camera.cellSize
+    );
 
 }
 
+  private unsubscribeCamera?: () => void;
+private unsubscribeSelection?: () => void;
+
+private drawCellBackground(cell: ProductCell): void {
+
+  if (!cell.isPerfectSquare) {
+      return;
+  }
+
+  this.ctx.fillStyle = "rgba(212,175,55,0.18)";
+
+  this.ctx.fillRect(
+      this.camera.cellLeft(cell.column),
+      this.camera.cellTop(cell.row),
+      this.camera.cellSize,
+      this.camera.cellSize
+  );
+
+}
+
+private drawCell(cell: ProductCell): void {
+
+  this.drawCellBackground(cell);
+
+  if (this.isHighlighted(cell)) {
+      this.drawHighlightedBackground(cell);
+  }
+
+  this.drawCellBorder(cell);
+
+  if (this.camera.showNumbers) {
+      this.drawCellLabel(cell);
+  }
+
+  if (
+      cell.row === this.selection.getHoverRow() &&
+      cell.column === this.selection.getHoverColumn()
+  ) {
+      this.drawHover(cell);
+  }
+
+  if (
+      cell.row === this.selection.getSelectedRow() &&
+      cell.column === this.selection.getSelectedColumn()
+  ) {
+      this.drawSelection(cell);
+  }
+
+}
+
+
+private get camera() {
+  return this.explorer.camera;
+}
+
+private get table() {
+  return this.explorer.table;
+}
+
+private get selection() {
+  return this.explorer.selection;
+}
+
+private drawHover(cell: ProductCell): void {
+
+  this.ctx.lineWidth = 2;
+  this.ctx.strokeStyle = "#66CCFF";
+
+  this.ctx.strokeRect(
+      this.camera.cellLeft(cell.column),
+      this.camera.cellTop(cell.row),
+      this.camera.cellSize,
+      this.camera.cellSize
+  );
+
+}
+private drawSelection(cell: ProductCell): void {
+
+  this.ctx.lineWidth = 3;
+  this.ctx.strokeStyle = "#00BFFF";
+
+  this.ctx.strokeRect(
+      this.camera.cellLeft(cell.column),
+      this.camera.cellTop(cell.row),
+      this.camera.cellSize,
+      this.camera.cellSize
+  );
+
+}
 private drawCellBorder(cell: ProductCell): void {
 
   this.ctx.lineWidth = 1;
 
-  this.ctx.strokeStyle =
-      cell.isPerfectSquare
-          ? "#D4AF37"
-          : "#333";
+  this.ctx.strokeStyle = "#333";
 
   this.ctx.strokeRect(
 
@@ -158,7 +252,18 @@ private drawCellBorder(cell: ProductCell): void {
       }
   
   }
+  private isHighlighted(cell: ProductCell): boolean {
 
+    if (!this.selection.hasSelection()) {
+        return false;
+    }
+
+    return (
+        cell.row === this.selection.getSelectedRow() ||
+        cell.column === this.selection.getSelectedColumn()
+    );
+
+}
   public redraw(): void {
 
     this.render();
@@ -167,8 +272,8 @@ private drawCellBorder(cell: ProductCell): void {
 
   public destroy(): void {
 
-    this.unsubscribe?.();
-
+    this.unsubscribeCamera?.();
+    this.unsubscribeSelection?.();
   }
 
 }

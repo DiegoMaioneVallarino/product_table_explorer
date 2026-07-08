@@ -1,5 +1,6 @@
 import { Camera } from './Camera';
 import { Renderer } from './Renderer';
+import { Explorer } from '../core/Explorer';
 
 export class Input {
   private dragging = false;
@@ -7,24 +8,28 @@ export class Input {
   private lastX = 0;
   private lastY = 0;
 
+
   constructor(
-    private canvas: HTMLCanvasElement,
-    private camera: Camera,
-    
+      private canvas: HTMLCanvasElement,
+      private explorer: Explorer,
   ) {}
-  private handleWheel = (e: WheelEvent): void => {
 
-    e.preventDefault();
+  private get camera(): Camera {
+    return this.explorer.camera;
+}
+private handleWheel = (e: WheelEvent): void => {
 
-    const direction = e.deltaY < 0
-    ? 1
-    : -1;
+  e.preventDefault();
 
-this.camera.zoomAt(
-    e.offsetX,
-    e.offsetY,
-    direction
-);
+  const direction = e.deltaY < 0
+      ? 1
+      : -1;
+
+  this.camera.zoomAt(
+      e.offsetX,
+      e.offsetY,
+      direction
+  );
 
 };
   public start(): void {
@@ -48,14 +53,39 @@ this.camera.zoomAt(
   }
 
   private handleMouseDown = (e: MouseEvent): void => {
+
     this.dragging = true;
 
     this.lastX = e.clientX;
     this.lastY = e.clientY;
-  };
+
+    const cell = this.camera.screenToCell(
+        e.offsetX,
+        e.offsetY
+    );
+
+    this.explorer.selection.select(
+        cell.row,
+        cell.column
+    );
+
+};
 
   private handleMouseMove = (e: MouseEvent): void => {
-    if (!this.dragging) return;
+
+    const cell = this.camera.screenToCell(
+        e.offsetX,
+        e.offsetY
+    );
+
+    this.explorer.selection.hover(
+        cell.row,
+        cell.column
+    );
+
+    if (!this.dragging) {
+        return;
+    }
 
     const dx = e.clientX - this.lastX;
     const dy = e.clientY - this.lastY;
@@ -64,7 +94,8 @@ this.camera.zoomAt(
     this.lastY = e.clientY;
 
     this.camera.pan(dx, dy);
-  };
+
+}
 
   private handleMouseUp = (): void => {
     this.dragging = false;

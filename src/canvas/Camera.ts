@@ -55,7 +55,8 @@ public pan(
 
     this.offsetX -= dx / this.cellSize;
     this.offsetY -= dy / this.cellSize;
-
+    this.offsetX = Math.max(0, this.offsetX);
+    this.offsetY = Math.max(0, this.offsetY);
     this.notify();
 
 }
@@ -111,13 +112,14 @@ public zoomOut(): void {
     zoomAt(
         screenX,
         screenY,
-        direction
+        zoomStep: number
+
     ): void {
     
         const worldX = this.screenToWorldX(screenX);
         const worldY = this.screenToWorldY(screenY);
         
-        this.zoomIndex += direction;
+        this.zoomIndex += zoomStep;
         
         this.zoomIndex = Math.max(
             0,
@@ -133,17 +135,21 @@ public zoomOut(): void {
         this.notify();
     
     }
-  // ---------- Conversión ----------
+// ---------- Conversión ----------
 
-  public worldToScreenX(column: number): number {
-      return (column - this.offsetX) * this.cellSize;
-  }
+public worldToScreenX(column: number): number {
 
-  public worldToScreenY(row: number): number {
-      return (row - this.offsetY) * this.cellSize;
-  }
+    return (column - this.offsetX) * this.cellSize;
 
-  public screenToWorldX(screenX: number): number {
+}
+
+public worldToScreenY(row: number): number {
+
+    return (row - this.offsetY) * this.cellSize;
+
+}
+
+public screenToWorldX(screenX: number): number {
 
     return screenX / this.cellSize + this.offsetX;
 
@@ -152,6 +158,37 @@ public zoomOut(): void {
 public screenToWorldY(screenY: number): number {
 
     return screenY / this.cellSize + this.offsetY;
+
+}
+
+public screenToColumn(screenX: number): number {
+
+    return Math.floor(
+        this.screenToWorldX(screenX)
+    );
+
+}
+
+public screenToRow(screenY: number): number {
+
+    return Math.floor(
+        this.screenToWorldY(screenY)
+    );
+
+}
+
+public screenToCell(
+    screenX: number,
+    screenY: number
+): {
+    row: number;
+    column: number;
+} {
+
+    return {
+        row: this.screenToRow(screenY),
+        column: this.screenToColumn(screenX)
+    };
 
 }
 

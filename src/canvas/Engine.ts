@@ -17,11 +17,11 @@ export class Engine {
     private explorer: Explorer
 ){
 
-    this.renderer = new Renderer(canvas, explorer.camera, explorer.table);
+    this.renderer = new Renderer(canvas, explorer);
 
     this.input = new Input(
         canvas,
-        explorer.camera
+        explorer
     );
 
   }
