@@ -7,7 +7,6 @@ export class Camera {
   private readonly zoomLevels = [
     1,
     2,
-    3,
     4,
     6,
     8,
