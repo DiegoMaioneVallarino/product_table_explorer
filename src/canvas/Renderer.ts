@@ -1,6 +1,19 @@
 import { Explorer } from '../core/Explorer';
 import { ProductCell } from '../math/ProductCell';
 
+export interface CellStyle {
+
+  backgroundColor?: string;
+
+  borderColor: string;
+
+  borderWidth: number;
+
+  textColor: string;
+
+  showLabel: boolean;
+
+}
 
 export class Renderer {
 
@@ -60,35 +73,41 @@ export class Renderer {
   private unsubscribeCamera?: () => void;
 private unsubscribeSelection?: () => void;
 
-private drawCellBackground(cell: ProductCell): void {
+private drawCellBackground(
+  cell: ProductCell,
+  style: CellStyle
+): void {
 
-  if (!cell.isPerfectSquare) {
+  if (!style.backgroundColor) {
       return;
   }
 
-  this.ctx.fillStyle = "rgba(212,175,55,0.18)";
+  this.ctx.fillStyle = style.backgroundColor;
 
   this.ctx.fillRect(
+
       this.camera.cellLeft(cell.column),
       this.camera.cellTop(cell.row),
+
       this.camera.cellSize,
       this.camera.cellSize
+
   );
 
 }
 
 private drawCell(cell: ProductCell): void {
-
-  this.drawCellBackground(cell);
+  const style = this.getCellStyle(cell);
+  this.drawCellBackground(cell,style);
 
   if (this.isHighlighted(cell)) {
       this.drawHighlightedBackground(cell);
   }
 
-  this.drawCellBorder(cell);
+  this.drawCellBorder(cell, style);
 
   if (this.camera.showNumbers) {
-      this.drawCellLabel(cell);
+      this.drawCellLabel(cell,style);
   }
 
   if (
@@ -146,11 +165,31 @@ private drawSelection(cell: ProductCell): void {
   );
 
 }
-private drawCellBorder(cell: ProductCell): void {
 
-  this.ctx.lineWidth = 1;
+private getCellStyle(cell: ProductCell): CellStyle {
 
-  this.ctx.strokeStyle = "#333";
+  return {
+
+      backgroundColor: cell.isPerfectSquare
+          ? "rgba(212,175,55,0.18)"
+          : undefined,
+
+      borderColor: "#333",
+
+      borderWidth: 1,
+
+      textColor: "#ddd",
+
+      showLabel: this.camera.showNumbers
+
+  };
+
+}
+
+private drawCellBorder(cell: ProductCell, style:CellStyle): void {
+  this.ctx.lineWidth = style.borderWidth;
+
+  this.ctx.strokeStyle = style.borderColor;
 
   this.ctx.strokeRect(
 
@@ -205,10 +244,9 @@ private drawCellBorder(cell: ProductCell): void {
   }
 
 
-  private drawCellLabel(cell: ProductCell): void {
+  private drawCellLabel(cell: ProductCell, style: CellStyle): void {
 
-    this.ctx.fillStyle = "#ddd";
-
+    this.ctx.fillStyle = style.textColor;
     this.ctx.textAlign = "center";
     this.ctx.textBaseline = "middle";
 
