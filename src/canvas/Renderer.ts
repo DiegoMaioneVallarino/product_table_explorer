@@ -1,19 +1,8 @@
 import { Explorer } from '../core/Explorer';
 import { ProductCell } from '../math/ProductCell';
 
-export interface CellStyle {
+import type { CellStyle } from './CellStyle';
 
-  backgroundColor?: string;
-
-  borderColor: string;
-
-  borderWidth: number;
-
-  textColor: string;
-
-  showLabel: boolean;
-
-}
 
 export class Renderer {
 
@@ -26,17 +15,14 @@ export class Renderer {
 
 
   constructor(
+    explorer: Explorer,
     canvas: HTMLCanvasElement,
-    explorer: Explorer
-  ) {
-    
-  
-  this.unsubscribeSelection = explorer.selection.onChange(() => {
-      this.render();
-  });
+
+) {
+
     this.canvas = canvas;
     this.explorer = explorer;
-  
+
     const ctx = canvas.getContext("2d");
 
     if (!ctx) {
@@ -52,10 +38,7 @@ export class Renderer {
     this.unsubscribeSelection = this.selection.onChange(() => {
         this.render();
     });
-
-  
-
-  }
+}
   
   private drawHighlightedBackground(cell: ProductCell): void {
 
@@ -97,8 +80,8 @@ private drawCellBackground(
 }
 
 private drawCell(cell: ProductCell): void {
-  const style = this.getCellStyle(cell);
-  this.drawCellBackground(cell,style);
+  const style = this.explorer.visual.getCellStyle(cell);
+    this.drawCellBackground(cell,style);
 
   if (this.isHighlighted(cell)) {
       this.drawHighlightedBackground(cell);
@@ -166,25 +149,7 @@ private drawSelection(cell: ProductCell): void {
 
 }
 
-private getCellStyle(cell: ProductCell): CellStyle {
 
-  return {
-
-      backgroundColor: cell.isPerfectSquare
-          ? "rgba(212,175,55,0.18)"
-          : undefined,
-
-      borderColor: "#333",
-
-      borderWidth: 1,
-
-      textColor: "#ddd",
-
-      showLabel: this.camera.showNumbers
-
-  };
-
-}
 
 private drawCellBorder(cell: ProductCell, style:CellStyle): void {
   this.ctx.lineWidth = style.borderWidth;

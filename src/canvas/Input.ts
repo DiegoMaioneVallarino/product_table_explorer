@@ -32,25 +32,42 @@ private handleWheel = (e: WheelEvent): void => {
   );
 
 };
-  public start(): void {
-    this.canvas.addEventListener('mousedown', this.handleMouseDown);
+public start(): void {
 
-    window.addEventListener('mousemove', this.handleMouseMove);
+  this.canvas.addEventListener("mousedown", this.handleMouseDown);
 
-    window.addEventListener('mouseup', this.handleMouseUp);
-    this.canvas.addEventListener('wheel', this.handleWheel, {
+  this.canvas.addEventListener("mousemove", this.handleMouseMove);
+
+  window.addEventListener("mouseup", this.handleMouseUp);
+
+  this.canvas.addEventListener("wheel", this.handleWheel, {
       passive: false
   });
-  }
 
-  public stop(): void {
-    this.canvas.removeEventListener('mousedown', this.handleMouseDown);
+}
+public stop(): void {
 
-    window.removeEventListener('mousemove', this.handleMouseMove);
+  this.canvas.removeEventListener(
+      'mousedown',
+      this.handleMouseDown
+  );
 
-    window.removeEventListener('mouseup', this.handleMouseUp);
-    this.canvas.removeEventListener('wheel', this.handleWheel);
-  }
+  this.canvas.removeEventListener(
+      'mousemove',
+      this.handleMouseMove
+  );
+
+  window.removeEventListener(
+      'mouseup',
+      this.handleMouseUp
+  );
+
+  this.canvas.removeEventListener(
+      'wheel',
+      this.handleWheel
+  );
+
+}
 
   private handleMouseDown = (e: MouseEvent): void => {
 
@@ -70,31 +87,34 @@ private handleWheel = (e: WheelEvent): void => {
     );
 
 };
+private handleMouseMove = (e: MouseEvent): void => {
 
-  private handleMouseMove = (e: MouseEvent): void => {
+  const rect = this.canvas.getBoundingClientRect();
 
-    const cell = this.camera.screenToCell(
-        e.offsetX,
-        e.offsetY
-    );
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
 
-    this.explorer.selection.hover(
-        cell.row,
-        cell.column
-    );
+  const cell = this.camera.screenToCell(
+      x,
+      y
+  );
 
-    if (!this.dragging) {
-        return;
-    }
+  this.explorer.selection.hover(
+      cell.row,
+      cell.column
+  );
 
-    const dx = e.clientX - this.lastX;
-    const dy = e.clientY - this.lastY;
+  if (!this.dragging) {
+      return;
+  }
 
-    this.lastX = e.clientX;
-    this.lastY = e.clientY;
+  const dx = e.clientX - this.lastX;
+  const dy = e.clientY - this.lastY;
 
-    this.camera.pan(dx, dy);
+  this.lastX = e.clientX;
+  this.lastY = e.clientY;
 
+  this.camera.pan(dx, dy);
 }
 
   private handleMouseUp = (): void => {

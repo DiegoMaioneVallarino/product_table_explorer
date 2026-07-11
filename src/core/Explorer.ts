@@ -1,6 +1,7 @@
 import { Camera } from '../canvas/Camera';
 import { Selection } from '../interaction/Selection';
 import { ProductTable } from '../math/ProductTable';
+import { VisualState } from './VisualState';
 
 export class Explorer {
 
@@ -9,15 +10,18 @@ export class Explorer {
     public readonly selection: Selection;
 
     public readonly table: ProductTable;
+    public readonly visual: VisualState;
 
-    constructor() {
+   constructor() {
 
-        this.camera = new Camera();
+    this.camera = new Camera();
 
-        this.selection = new Selection();
+    this.selection = new Selection();
 
-        this.table = new ProductTable();
+    this.table = new ProductTable();
 
-    }
+    this.visual = new VisualState(this);
+
+}
 
 }
