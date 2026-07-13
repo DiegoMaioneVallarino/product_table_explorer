@@ -3,6 +3,8 @@ import './Toolbar.css';
 function Toolbar() {
   return (
     <header className="toolbar">
+     <div className="tittleArea" />
+
       <button>Primos</button>
       <button>Pares</button>
       <button>Fibonacci</button>

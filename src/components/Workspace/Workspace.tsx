@@ -16,7 +16,8 @@ function Workspace() {
         []
     );
     return (
-        <div className="workspace">
+    <div className="workspace">
+        <div className="overWorkspace"></div>
         <div className="innerWorkspace" >
             <div className="corner" />
 

@@ -4,7 +4,16 @@
     position: relative;
 
 }
-
+.overWorkspace {
+    background: #0c0c0cba;
+    right: 0;
+    width: 350px;
+    position: absolute;
+    z-index: 22;
+    height: 100%;
+    backdrop-filter: blur(16px);
+    box-shadow: inset 2px 0 0 0px #ffffff0a;
+}
 .innerWorkspace {
     position: absolute;
     top: 30px;
