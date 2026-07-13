@@ -17,7 +17,7 @@ function Workspace() {
     );
     return (
         <div className="workspace">
-
+        <div className="innerWorkspace" >
             <div className="corner" />
 
             <AxisTop explorer={explorer} />
@@ -26,7 +26,8 @@ function Workspace() {
 
             <NumberCanvas explorer={explorer} />
 
-        </div>
+        </div> 
+        </div> 
     );
 
 }

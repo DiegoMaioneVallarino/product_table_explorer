@@ -26,7 +26,7 @@ export class AxisRenderer {
     const firstCol = this.camera.firstVisibleColumn();
     const cols = this.camera.visibleColumns(this.canvas.width);
 
-    this.ctx.fillStyle = '#fff';
+    this.ctx.fillStyle = '#383737';
     this.ctx.font = `${this.camera.cellSize * 0.35}px Arial`;
     this.ctx.textAlign = 'center';
     this.ctx.textBaseline = 'middle';
@@ -47,7 +47,7 @@ export class AxisRenderer {
     const firstRow = this.camera.firstVisibleRow();
     const rows = this.camera.visibleRows(this.canvas.height);
 
-    this.ctx.fillStyle = '#fff';
+    this.ctx.fillStyle = '#383737';
     this.ctx.font = `${this.camera.cellSize * 0.35}px Arial`;
     this.ctx.textAlign = 'center';
     this.ctx.textBaseline = 'middle';
@@ -69,7 +69,7 @@ export class AxisRenderer {
   }
 
   private clear(): void {
-    this.ctx.fillStyle = '#222';
+    this.ctx.fillStyle = '#0c0c0c';
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
   }
 

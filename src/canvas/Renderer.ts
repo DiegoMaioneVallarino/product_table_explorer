@@ -197,7 +197,7 @@ private drawCellBorder(cell: ProductCell, style:CellStyle): void {
 
   private clear(): void {
 
-    this.ctx.fillStyle = '#111';
+    this.ctx.fillStyle = '#0c0c0c';
 
     this.ctx.fillRect(
       0,

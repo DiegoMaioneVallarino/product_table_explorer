@@ -17,7 +17,7 @@ export class Engine {
     private explorer: Explorer
 ){
 
-    this.renderer = new Renderer(canvas, explorer);
+    this.renderer = new Renderer( explorer,canvas);
 
     this.input = new Input(
         canvas,
