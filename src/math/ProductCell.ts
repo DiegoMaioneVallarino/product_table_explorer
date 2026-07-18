@@ -41,5 +41,10 @@ export class ProductCell {
     public get screenLabel(): string {
         return this.value.toString();
     }
+    public get isEven(): boolean {
+
+        return this.value % 2 === 0;
+    
+    }
 
 }

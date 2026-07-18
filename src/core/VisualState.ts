@@ -1,6 +1,6 @@
 import { ProductCell } from '../math/ProductCell';
 import { Explorer } from './Explorer';
-import type{ CellStyle } from '../canvas/CellStyle';
+import type { CellStyle } from '../canvas/CellStyle';
 
 export class VisualState {
 
@@ -10,11 +10,21 @@ export class VisualState {
 
     public getCellStyle(cell: ProductCell): CellStyle {
 
+        let backgroundColor: string | undefined;
+
+        // Números pares
+        if (cell.isEven) {
+            backgroundColor = 'rgba(70,130,255,0.10)';
+        }
+
+        // Cuadrados perfectos (tienen prioridad)
+        if (cell.isPerfectSquare) {
+            backgroundColor = 'rgba(212,175,55,0.18)';
+        }
+
         return {
 
-            backgroundColor: cell.isPerfectSquare
-                ? 'rgba(212,175,55,0.18)'
-                : undefined,
+            backgroundColor,
 
             borderColor: '#333',
 
