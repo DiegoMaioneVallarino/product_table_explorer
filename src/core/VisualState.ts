@@ -8,20 +8,32 @@ export class VisualState {
         private explorer: Explorer
     ) {}
 
+
+ 
+
     public getCellStyle(cell: ProductCell): CellStyle {
 
-        let backgroundColor: string | undefined;
+        let backgroundColor = "rgb(71, 64, 0)";
 
-        // Números pares
-        if (cell.isEven) {
-            backgroundColor = 'rgba(70,130,255,0.10)';
+        if (
+            this.explorer.numberSystem.isCoupledMultiple(
+                cell.value
+            )
+        ) {
+        
+            backgroundColor = "rgba(20,20,20,0.45)";
+        
         }
-
-        // Cuadrados perfectos (tienen prioridad)
+        
         if (cell.isPerfectSquare) {
-            backgroundColor = 'rgba(212,175,55,0.18)';
+        
+            backgroundColor = "rgb(75, 75, 75)";
+        
         }
 
+        
+
+       
         return {
 
             backgroundColor,

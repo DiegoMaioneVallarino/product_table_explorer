@@ -2,6 +2,7 @@ import { Camera } from '../canvas/Camera';
 import { Selection } from '../interaction/Selection';
 import { ProductTable } from '../math/ProductTable';
 import { VisualState } from './VisualState';
+import { NumberSystem } from "../math/NumberSystem";
 
 export class Explorer {
 
@@ -11,7 +12,7 @@ export class Explorer {
 
     public readonly table: ProductTable;
     public readonly visual: VisualState;
-
+    public readonly numberSystem: NumberSystem;
    constructor() {
 
     this.camera = new Camera();
@@ -21,7 +22,7 @@ export class Explorer {
     this.table = new ProductTable();
 
     this.visual = new VisualState(this);
-
+    this.numberSystem = new NumberSystem();
 }
 
 }
