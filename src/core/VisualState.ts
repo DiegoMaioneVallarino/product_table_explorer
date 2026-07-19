@@ -13,39 +13,42 @@ export class VisualState {
 
     public getCellStyle(cell: ProductCell): CellStyle {
 
-        let backgroundColor = "rgb(71, 64, 0)";
-
+        let backgroundColor = 'rgb(71, 64, 0)';
+        let borderColor = '#333';
+        let borderWidth = 1;
+        
+        // Oscurecer múltiplos de acoplables
         if (
             this.explorer.numberSystem.isCoupledMultiple(
                 cell.value
             )
         ) {
+            backgroundColor = 'rgba(61, 0, 0, 0.45)';
+        }
         
-            backgroundColor = "rgba(20,20,20,0.45)";
+        // Iluminar filas/columnas primas
+        if (
+            this.explorer.primeCache.isPrime(cell.rowFactor) ||
+            this.explorer.primeCache.isPrime(cell.columnFactor)
+        ) {
+        
+            backgroundColor = "rgba(255, 255, 255, 0.06)";
         
         }
         
+        // Cuadrados perfectos tienen prioridad
         if (cell.isPerfectSquare) {
-        
-            backgroundColor = "rgb(75, 75, 75)";
-        
+            backgroundColor = 'rgba(212,175,55,0.18)';
+            borderColor = '#D4AF37';
+            borderWidth = 2;
         }
-
         
-
-       
         return {
-
             backgroundColor,
-
-            borderColor: '#333',
-
-            borderWidth: 1,
-
+            borderColor,
+            borderWidth,
             textColor: '#ddd',
-
             showLabel: this.explorer.camera.showNumbers
-
         };
 
     }
