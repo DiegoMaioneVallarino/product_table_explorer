@@ -23,9 +23,35 @@ function Workspace() {
         return ex;
     
     }, []);
+    const handleSeePath = (): void => {
+
+        if (!explorer.selection.hasSelection()) {
+            return;
+        }
+    
+        const cell = explorer.table.getCell(
+    
+            explorer.selection.getSelectedRow(),
+            explorer.selection.getSelectedColumn()
+    
+        );
+    
+        explorer.buildPath(cell);
+        console.log(explorer.path);
+    
+    };
+    
     return (
     <div className="workspace">
-        <div className="overWorkspace"></div>
+        <div className="overWorkspace">
+        <div className="numberDataArea">
+            <div className="numberShow">333</div>
+            </div>
+            <div className="numberActionArea">
+                <div className="seePathBt NumberpanelBt" onClick={handleSeePath}>See path</div>
+                <div className="seeModularCurveBt NumberpanelBt">See mod curve</div>
+                </div>
+        </div>
         <div className="innerWorkspace" >
             <div className="corner" />
 

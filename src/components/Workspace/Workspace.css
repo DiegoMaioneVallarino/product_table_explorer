@@ -72,3 +72,32 @@
     background: #222;
 
 }
+
+.numberShow {
+    font-family: Times;
+    font-size: 61px;
+    height: 51px;
+    align-items: center;
+    display: grid;
+    margin-top: 50px;
+}
+
+.NumberpanelBt {
+    width: fit-content;
+    padding: 5px;
+    border-radius: 8px;
+    box-shadow: 0 0 0 2px #6d6d6d57;
+    color: #ffffff57;
+    padding-left: 11px;
+    padding-right: 11px;
+    margin-left: 15px;
+    float: left;
+    margin-top: 111px;
+}
+
+.NumberpanelBt:hover {
+    box-shadow: 0 0 0 2px #6d6d6db8;
+    color: #ffffff8a;
+    padding-left: 11px;
+    cursor: pointer;
+}

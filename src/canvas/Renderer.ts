@@ -35,26 +35,12 @@ export class Renderer {
         this.render();
     });
 
-    this.unsubscribeSelection = this.selection.onChange(() => {
-        this.render();
-    });
+  
 }
   
-  private drawHighlightedBackground(cell: ProductCell): void {
-
-    this.ctx.fillStyle = "rgba(70,120,255,0.18)";
-
-    this.ctx.fillRect(
-        this.camera.cellLeft(cell.column),
-        this.camera.cellTop(cell.row),
-        this.camera.cellSize,
-        this.camera.cellSize
-    );
-
-}
+ 
 
   private unsubscribeCamera?: () => void;
-private unsubscribeSelection?: () => void;
 
 private drawCellBackground(
   cell: ProductCell,
@@ -80,32 +66,19 @@ private drawCellBackground(
 }
 
 private drawCell(cell: ProductCell): void {
-  const style = this.explorer.visual.getCellStyle(cell);
-    this.drawCellBackground(cell,style);
-    this.drawCellHighlight(cell, style);
 
-  if (this.isHighlighted(cell)) {
-      this.drawHighlightedBackground(cell);
-  }
+  const style = this.explorer.visual.getCellStyle(cell);
+
+  this.drawCellBackground(cell, style);
+
+  this.drawCellHighlight(cell, style);
 
   this.drawCellBorder(cell, style);
 
   if (this.camera.showNumbers) {
-      this.drawCellLabel(cell,style);
-  }
 
-  if (
-      cell.row === this.selection.getHoverRow() &&
-      cell.column === this.selection.getHoverColumn()
-  ) {
-      this.drawHover(cell);
-  }
+      this.drawCellLabel(cell, style);
 
-  if (
-      cell.row === this.selection.getSelectedRow() &&
-      cell.column === this.selection.getSelectedColumn()
-  ) {
-      this.drawSelection(cell);
   }
 
 }
@@ -140,36 +113,9 @@ private get table() {
   return this.explorer.table;
 }
 
-private get selection() {
-  return this.explorer.selection;
-}
 
-private drawHover(cell: ProductCell): void {
 
-  this.ctx.lineWidth = 2;
-  this.ctx.strokeStyle = "#66CCFF";
 
-  this.ctx.strokeRect(
-      this.camera.cellLeft(cell.column),
-      this.camera.cellTop(cell.row),
-      this.camera.cellSize,
-      this.camera.cellSize
-  );
-
-}
-private drawSelection(cell: ProductCell): void {
-
-  this.ctx.lineWidth = 3;
-  this.ctx.strokeStyle = "#00BFFF";
-
-  this.ctx.strokeRect(
-      this.camera.cellLeft(cell.column),
-      this.camera.cellTop(cell.row),
-      this.camera.cellSize,
-      this.camera.cellSize
-  );
-
-}
 
 
 
@@ -277,18 +223,7 @@ private drawCellBorder(cell: ProductCell, style:CellStyle): void {
       }
   
   }
-  private isHighlighted(cell: ProductCell): boolean {
 
-    if (!this.selection.hasSelection()) {
-        return false;
-    }
-
-    return (
-        cell.row === this.selection.getSelectedRow() ||
-        cell.column === this.selection.getSelectedColumn()
-    );
-
-}
   public redraw(): void {
 
     this.render();
@@ -298,7 +233,7 @@ private drawCellBorder(cell: ProductCell, style:CellStyle): void {
   public destroy(): void {
 
     this.unsubscribeCamera?.();
-    this.unsubscribeSelection?.();
-  }
+
+}
 
 }
