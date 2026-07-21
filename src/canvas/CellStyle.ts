@@ -1,6 +1,7 @@
 export interface CellStyle {
 
     backgroundColor?: string;
+    highlightColor?: string;
 
     borderColor: string;
 

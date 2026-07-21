@@ -16,14 +16,14 @@ export class VisualState {
         let backgroundColor = 'rgb(71, 64, 0)';
         let borderColor = '#333';
         let borderWidth = 1;
-        
+        let highlightColor: string | undefined;
         // Oscurecer múltiplos de acoplables
         if (
             this.explorer.numberSystem.isCoupledMultiple(
                 cell.value
             )
         ) {
-            backgroundColor = 'rgba(61, 0, 0, 0.45)';
+            backgroundColor = 'rgba(24, 24, 24, 0.45)';
         }
         
         // Iluminar filas/columnas primas
@@ -32,7 +32,7 @@ export class VisualState {
             this.explorer.primeCache.isPrime(cell.columnFactor)
         ) {
         
-            backgroundColor = "rgba(255, 255, 255, 0.06)";
+            highlightColor = "rgba(255,255,255,0.06)";
         
         }
         
@@ -44,11 +44,19 @@ export class VisualState {
         }
         
         return {
+
             backgroundColor,
+        
+            highlightColor,
+        
             borderColor,
+        
             borderWidth,
-            textColor: '#ddd',
+        
+            textColor: "#ddd",
+        
             showLabel: this.explorer.camera.showNumbers
+        
         };
 
     }

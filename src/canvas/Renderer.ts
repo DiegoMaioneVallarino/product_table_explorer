@@ -82,6 +82,7 @@ private drawCellBackground(
 private drawCell(cell: ProductCell): void {
   const style = this.explorer.visual.getCellStyle(cell);
     this.drawCellBackground(cell,style);
+    this.drawCellHighlight(cell, style);
 
   if (this.isHighlighted(cell)) {
       this.drawHighlightedBackground(cell);
@@ -108,7 +109,28 @@ private drawCell(cell: ProductCell): void {
   }
 
 }
+private drawCellHighlight(
+  cell: ProductCell,
+  style: CellStyle
+): void {
 
+  if (!style.highlightColor) {
+      return;
+  }
+
+  this.ctx.fillStyle = style.highlightColor;
+
+  this.ctx.fillRect(
+
+      this.camera.cellLeft(cell.column),
+      this.camera.cellTop(cell.row),
+
+      this.camera.cellSize,
+      this.camera.cellSize
+
+  );
+
+}
 
 private get camera() {
   return this.explorer.camera;
