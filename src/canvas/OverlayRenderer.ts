@@ -1,9 +1,9 @@
 import { Explorer } from "../core/Explorer";
+import { ProductPathNode } from "../math/path/ProductPathNode";
 
 export class OverlayRenderer {
 
     private ctx: CanvasRenderingContext2D;
-
     private unsubscribeCamera?: () => void;
     private unsubscribeSelection?: () => void;
 
@@ -39,7 +39,7 @@ export class OverlayRenderer {
     private get selection() {
         return this.explorer.selection;
     }
-
+   
     public render(): void {
 
         const rect = this.canvas.getBoundingClientRect();
@@ -71,6 +71,8 @@ export class OverlayRenderer {
             );
 
         }
+
+        this.drawPath();
 
     }
 
@@ -107,6 +109,45 @@ export class OverlayRenderer {
         );
 
     }
+    private drawPath(): void {
+
+        if (!this.explorer.path.root) {
+            return;
+        }
+    
+        this.drawNode(
+            this.explorer.path.root
+        );
+    
+    }
+
+    private drawNode(
+        node: ProductPathNode
+    ): void {
+    
+        const cell = node.cell;
+    
+        this.ctx.fillStyle =
+            "rgba(255,80,80,0.45)";
+    
+        this.ctx.fillRect(
+    
+            this.camera.cellLeft(cell.column),
+            this.camera.cellTop(cell.row),
+    
+            this.camera.cellSize,
+            this.camera.cellSize
+    
+        );
+    
+        for (const child of node.children) {
+    
+            this.drawNode(child);
+    
+        }
+    
+    }
+
 
     public destroy(): void {
 

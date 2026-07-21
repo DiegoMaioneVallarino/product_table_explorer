@@ -25,9 +25,8 @@ export class Explorer {
     ): void {
     
         this.path =
-            this.pathBuilder.build(
-                cell,
-                50
+            this.pathBuilder.start(
+                cell
             );
     
     }

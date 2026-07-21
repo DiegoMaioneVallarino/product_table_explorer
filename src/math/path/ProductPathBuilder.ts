@@ -4,14 +4,14 @@ import { ProductPath } from "./ProductPath";
 import { ProductPathNode } from "./ProductPathNode";
 
 export class ProductPathBuilder {
-
+    private pending: ProductPathNode[] = [];
     constructor(
         private table: ProductTable
     ) {}
 
-    public build(
-        start: ProductCell,
-        steps: number
+    
+    public start(
+        start: ProductCell
     ): ProductPath {
     
         const path = new ProductPath();
@@ -20,21 +20,45 @@ export class ProductPathBuilder {
     
         path.root = root;
     
-        const neighbors =
-            this.getClosestNeighbors(start);
-    
-        for (const neighbor of neighbors) {
-    
-            root.children.push(
-                new ProductPathNode(neighbor)
-            );
-    
-        }
+        this.pending = [root];
     
         return path;
     
     }
 
+    public step(): void {
+
+        const node = this.pending.shift();
+    
+        if (!node) {
+            return;
+        }
+    
+        const neighbors =
+            this.getClosestNeighbors(
+                node.cell
+            );
+    
+        for (const neighbor of neighbors) {
+    
+            const child =
+                new ProductPathNode(
+                    neighbor
+                );
+    
+            node.children.push(child);
+    
+            this.pending.push(child);
+    
+        }
+    
+    }
+
+    public isFinished(): boolean {
+
+        return this.pending.length === 0;
+    
+    }
     private getClosestNeighbors(
         cell: ProductCell
     ): ProductCell[] {
@@ -78,10 +102,16 @@ export class ProductPathBuilder {
                     continue;
                 }
     
-                const distance = Math.abs(
-                    neighbor.value -
+                if (
+                    neighbor.value >=
                     cell.value
-                );
+                ) {
+                    continue;
+                }
+                
+                const distance =
+                    cell.value -
+                    neighbor.value;
     
                 if (distance < bestDistance) {
     
@@ -101,7 +131,11 @@ export class ProductPathBuilder {
             }
     
         }
-    
+        console.log(
+            "Centro:",
+            cell.value,
+            neighbors.map(n => n.value)
+        );
         return neighbors;
     
     }
