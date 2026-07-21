@@ -1,0 +1,27 @@
+.canvas {
+    grid-column: 2;
+    grid-row: 2;
+  
+    overflow: hidden;
+    }
+
+    .canvas-container {
+
+        position: relative;
+    
+        width: 100%;
+        height: 100%;
+    
+    }
+    
+    .grid-canvas,
+    .overlay-canvas {
+    
+        position: absolute;
+    
+        inset: 0;
+    
+        width: 100%;
+        height: 100%;
+    
+    }

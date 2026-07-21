@@ -1,13 +1,13 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef } from "react";
 
-import { Engine } from '../../../canvas/Engine';
-import { Explorer } from '../../../core/Explorer';
+import { Engine } from "../../../canvas/Engine";
+import { Explorer } from "../../../core/Explorer";
 
-interface NumberCanvasProps {
+interface GridCanvasProps {
     explorer: Explorer;
 }
 
-function NumberCanvas({ explorer }: NumberCanvasProps) {
+function GridCanvas({ explorer }: GridCanvasProps) {
 
     const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -22,19 +22,17 @@ function NumberCanvas({ explorer }: NumberCanvasProps) {
 
         engine.start();
 
-        return () => {
-            engine.stop();
-        };
+        return () => engine.stop();
 
     }, [explorer]);
 
     return (
         <canvas
             ref={canvasRef}
-            className="number-canvas"
+            className="grid-canvas"
         />
     );
 
 }
 
-export default NumberCanvas;
+export default GridCanvas;

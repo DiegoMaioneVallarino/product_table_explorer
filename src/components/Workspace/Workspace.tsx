@@ -7,8 +7,8 @@ import { Explorer } from '../../core/Explorer';
 
 import AxisTop from './AxisTop/AxisTop';
 import AxisLeft from './AxisLeft/AxisLeft';
-import NumberCanvas from './NumberCanvas/NumberCanvas';
-
+import GridCanvas from "./GridCanvas/GridCanvas";
+import OverlayCanvas from "./OverlayCanvas/OverlayCanvas";
 function Workspace() {
 
     const explorer = useMemo(() => {
@@ -33,8 +33,13 @@ function Workspace() {
 
             <AxisLeft explorer={explorer} />
 
-            <NumberCanvas explorer={explorer} />
+            <div className="canvas-container">
 
+<GridCanvas explorer={explorer} />
+
+<OverlayCanvas explorer={explorer} />
+
+</div>
         </div> 
         </div> 
     );
