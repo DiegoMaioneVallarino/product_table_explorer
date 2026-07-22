@@ -9,6 +9,9 @@ import AxisTop from './AxisTop/AxisTop';
 import AxisLeft from './AxisLeft/AxisLeft';
 import GridCanvas from "./GridCanvas/GridCanvas";
 import OverlayCanvas from "./OverlayCanvas/OverlayCanvas";
+
+import NumberPanel from './NumberPanel/NumberPanel';
+
 function Workspace() {
 
     const explorer = useMemo(() => {
@@ -25,31 +28,40 @@ function Workspace() {
     }, []);
     const handleSeePath = (): void => {
 
-        if (!explorer.selection.hasSelection()) {
+        const cell = explorer.selection.getSelectedCell(
+            explorer.table
+        );
+    
+        if (!cell) {
             return;
         }
     
-        const cell = explorer.table.getCell(
-    
-            explorer.selection.getSelectedRow(),
-            explorer.selection.getSelectedColumn()
-    
-        );
-    
         explorer.buildPath(cell);
-        console.log(explorer.path);
+    
+    };
+
+    const handleSeeModCurve = (): void => {
+
+        const cell =
+            explorer.selection.getSelectedCell(
+                explorer.table
+            );
+    
+        if (!cell) {
+            return;
+        }
+    
+        explorer.buildModularCurve(cell);
     
     };
     
     return (
     <div className="workspace">
         <div className="overWorkspace">
-        <div className="numberDataArea">
-            <div className="numberShow">333</div>
-            </div>
+        <NumberPanel explorer={explorer} />
             <div className="numberActionArea">
                 <div className="seePathBt NumberpanelBt" onClick={handleSeePath}>See path</div>
-                <div className="seeModularCurveBt NumberpanelBt">See mod curve</div>
+                <div className="seeModularCurveBt NumberpanelBt" onClick={handleSeeModCurve}>See mod curve</div>
                 </div>
         </div>
         <div className="innerWorkspace" >

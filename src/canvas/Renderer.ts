@@ -87,11 +87,19 @@ private drawCellHighlight(
   style: CellStyle
 ): void {
 
-  if (!style.highlightColor) {
+  let color = style.highlightColor;
+
+  if (this.explorer.modularCurve.contains(cell)) {
+
+      color = "rgba(0,255,0,0.45)";
+
+  }
+
+  if (!color) {
       return;
   }
 
-  this.ctx.fillStyle = style.highlightColor;
+  this.ctx.fillStyle = color;
 
   this.ctx.fillRect(
 
@@ -145,15 +153,15 @@ private drawCellBorder(cell: ProductCell, style:CellStyle): void {
 
 }
 
-  public render(): void {
+public render(): void {
 
-    this.resize();
+  this.resize();
 
-    this.clear();
+  this.clear();
 
-    this.drawVisibleCells();
-  }
+  this.drawVisibleCells();
 
+}
   private resize(): void {
 
     const rect = this.canvas.getBoundingClientRect();

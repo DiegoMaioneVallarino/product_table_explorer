@@ -1,3 +1,7 @@
+import { ProductCell } from "../math/ProductCell";
+import { ProductTable } from "../math/ProductTable";
+
+
 export class Selection {
 
     private selectedRow = -1;
@@ -81,5 +85,19 @@ export class Selection {
     public hasSelection(): boolean {
         return this.selectedRow >= 0;
     }
-
+    public getSelectedCell(
+        table: ProductTable
+    ): ProductCell | undefined {
+    
+        if (!this.hasSelection()) {
+            return;
+        }
+    
+        return table.getCell(
+            this.selectedRow,
+            this.selectedColumn
+        );
+    
+    }
 }
+

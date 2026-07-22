@@ -60,7 +60,11 @@ public pan(
 
 }
 
+public refresh(): void {
 
+    this.notify();
+
+}
 public get showNumbers(): boolean {
 
     return this.cellSize >= 18;

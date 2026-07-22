@@ -73,7 +73,6 @@ export class OverlayRenderer {
         }
 
         this.drawPath();
-
     }
 
     private drawHover(
@@ -120,7 +119,7 @@ export class OverlayRenderer {
         );
     
     }
-
+ 
     private drawNode(
         node: ProductPathNode
     ): void {
