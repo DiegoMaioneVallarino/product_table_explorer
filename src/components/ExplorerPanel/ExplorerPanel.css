@@ -3,3 +3,66 @@
     border-right: 2px solid #ffffff08;
     z-index: 2;
 }
+
+.explorer-panel-alert {
+    background: #141311;
+    width: 90%;
+    height: 110px;
+    border-radius: 21px;
+    margin: auto;
+    margin-top: 17px;
+    box-shadow: 0 0 0 2.5px #291f09;
+}
+
+.text-explorer-panel-alert {
+    font-family: times;
+    font-style: italic;
+    color: #8b5a92;
+    font-size: 21px;
+    margin-top: 32px;
+    margin: auto;
+    padding: 11px;
+    /* -webkit-background-clip: text; */
+    background-clip: text;
+}
+
+
+
+b {}
+
+.function-formula {
+    width: fit-content;
+    margin: auto;
+    font-size: 36px;
+    font-family: times;
+    font-style: italic;
+
+  /* 1. Definir el gradiente como fondo */
+    background: linear-gradient(181deg, #efe2a1, #857844);
+
+  /* 2. Recortar el fondo al texto */
+    -webkit-background-clip: text;
+    background-clip: text;
+
+  /* 3. Hacer el texto transparente para ver el fondo */
+    -webkit-text-fill-color: transparent;
+}
+
+.explorer-panel-alert.color {
+    box-shadow: 0 0 0 2.5px #301939;
+    background: #171316;
+}
+
+.explorer-panel-alert.search {
+    box-shadow: 0 0 0 2.5px #002b45;
+    background: #0d1325;
+}
+
+.text-explorer-panel-alert.search {
+    color: #4ea8df;
+}
+
+.explorer-panel-alert.note {
+    box-shadow: 0 0 0 2.5px #2a2a2a;
+    background: #1b1b1b;
+}

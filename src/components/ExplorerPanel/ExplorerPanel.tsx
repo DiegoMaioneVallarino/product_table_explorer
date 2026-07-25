@@ -3,7 +3,121 @@ import './ExplorerPanel.css';
 function ExplorerPanel() {
   return (
     <aside className="explorer-panel">
+      <div className="explorer-panel-alert color">
+        <div className="type-of-explorer-panel-alert">
+          <div className="text-explorer-panel-alert">
+            <b
+              style={{
+                background: 'linear-gradient(90deg, #ff3100, #feb47b)',
+                backgroundClip: 'text',
+                color: '#ffffff',
+              }}
+            >
+              Apply{' '}
+            </b>
+            <b>color</b>
+          </div>
+          <div className="function-formula"></div>
+        </div>
+      </div>
 
+      <div className="explorer-panel-alert fx">
+        <div className="type-of-explorer-panel-alert">
+          <div className="text-explorer-panel-alert">
+            <b
+              style={{
+                background: 'linear-gradient(90deg, #ff3100, #feb47b)',
+                backgroundClip: 'text',
+                color: '#ffffff',
+              }}
+            >
+              Apply{' '}
+            </b>
+
+            <b
+              style={{
+                color: '#eada90',
+              }}
+            >
+              function
+            </b>
+          </div>
+
+          <div className="function-formula">
+            <b
+              style={{
+                backgroundClip: 'text',
+                color: '#ffffff',
+              }}
+            >
+              x*h(x)
+            </b>
+          </div>
+        </div>
+      </div>
+
+      <div className="explorer-panel-alert search">
+        <div className="type-of-explorer-panel-alert">
+          <div className="text-explorer-panel-alert search">
+            <b
+              style={{
+                background: 'linear-gradient(90deg, #4d00ff, #feb47b)',
+                backgroundClip: 'text',
+                color: '#ffffff',
+              }}
+            >
+              Search
+            </b>{' '}
+            <b>product</b>
+          </div>
+
+          <div className="function-formula"></div>
+        </div>
+      </div>
+
+      <div className="explorer-panel-alert note">
+        <div className="type-of-explorer-panel-alert">
+          <div className="text-explorer-panel-alert note">
+            <div className="title-note-alert">
+              <b
+                style={{
+                  background: 'linear-gradient(90deg, #4d00ff, #feb47b)',
+                  WebkitBackgroundClip: 'text',
+                  color: '#ffffff',
+                  width: '196px',
+                  height: '45px',
+                  display: 'flow',
+                  margin: 'auto',
+                  fontSize: '21px',
+                  lineHeight: '19px',
+                  marginTop: '2px',
+                }}
+              >
+                Revisar geometría de factores repetidos.
+              </b>
+            </div>
+
+            <div className="description-note-alert">
+              <b
+                style={{
+                  WebkitBackgroundClip: 'text',
+                  color: '#828282',
+                  width: '212px',
+                  height: '53px',
+                  display: 'flow',
+                  margin: 'auto',
+                  fontSize: '17px',
+                  lineHeight: '14px',
+                }}
+              >
+                Los productos que se repiten caen en una misma curva.
+              </b>
+            </div>
+          </div>
+
+          <div className="function-formula"></div>
+        </div>
+      </div>
     </aside>
   );
 }
