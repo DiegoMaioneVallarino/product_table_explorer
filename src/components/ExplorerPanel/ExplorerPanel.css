@@ -66,3 +66,26 @@ b {}
     box-shadow: 0 0 0 2.5px #2a2a2a;
     background: #1b1b1b;
 }
+
+.explorer-panel-option-bar {
+    width: 100%;
+    height: 50px;
+    grid-template-columns: 20% 20% 20% 20% 20%;
+    display: grid;
+}
+
+.option-bar-bt {
+    box-shadow: 0 1px 0 0 #181818;
+}
+
+div#add-panel-alert {
+    text-align: center;
+    align-items: center;
+    display: grid;
+    font-size: 34px;
+}
+
+.option-bar-bt-ico {
+    margin-top: -9px;
+    margin-left: 11px;
+}

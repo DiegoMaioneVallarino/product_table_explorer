@@ -3,6 +3,14 @@ import './ExplorerPanel.css';
 function ExplorerPanel() {
   return (
     <aside className="explorer-panel">
+      <div className="explorer-panel-option-bar">
+        <div className="option-bar-bt">
+          </div>
+          <div className="option-bar-bt"></div>
+          <div className="option-bar-bt"></div>
+          <div className="option-bar-bt"></div>
+          <div id="add-panel-alert" className="option-bar-bt">
+            <div className="option-bar-bt-ico">+</div></div></div>
       <div className="explorer-panel-alert color">
         <div className="type-of-explorer-panel-alert">
           <div className="text-explorer-panel-alert">
