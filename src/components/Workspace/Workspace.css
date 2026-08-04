@@ -74,12 +74,17 @@
 }
 
 .numberShow {
-    font-family: Times;
+        font-family: Times;
     font-size: 61px;
     height: 51px;
     align-items: center;
     display: grid;
     margin-top: 50px;
+    box-shadow: 0 2px 0 0px #ffffff;
+    width: fit-content;
+    margin: auto;
+    border-radius: 11px;
+    padding: 11px;
 }
 
 .numberShow.osc {

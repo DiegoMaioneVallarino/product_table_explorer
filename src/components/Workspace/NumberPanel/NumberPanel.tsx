@@ -56,11 +56,11 @@ function NumberPanel({
 
         <div className="numberDataArea">
 
-            <NumberShow
+            <NumberFactors
                 info={info}
             />
 
-            <NumberFactors
+            <NumberShow
                 info={info}
             />
 
