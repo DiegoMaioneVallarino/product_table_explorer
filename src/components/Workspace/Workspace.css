@@ -82,6 +82,35 @@
     margin-top: 50px;
 }
 
+.numberShow.osc {
+    text-shadow: 0 0 8px #ff00f1c9;
+    background: linear-gradient(
+90deg, #ffffff, #ff0000);
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.numberShow.asc {
+    text-shadow: 0 0 8px #ff4600c9;
+    background: linear-gradient(90deg, #fff100, #ff9b00);
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.numberShow.desc {
+    text-shadow: 0 0 8px #0069ffc9;
+    background: linear-gradient(90deg, #ffffff, #6200ff);
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.numberShow.const {
+    text-shadow: 0 0 8px #ffffffc9;
+    background: linear-gradient(90deg, #ffffff, #cccccc);
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
 .NumberpanelBt {
     width: fit-content;
     padding: 5px;

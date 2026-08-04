@@ -2,6 +2,12 @@ import { useEffect, useState } from "react";
 
 import { Explorer } from "../../../core/Explorer";
 
+import type { NumberInfo } from "../../../math/analyzers/NumberInfo";
+
+import NumberShow from "./NumberShow";
+import NumberFactors from "./NumberFactors";
+import NumberProperties from "./NumberProperties";
+
 interface NumberPanelProps {
 
     explorer: Explorer;
@@ -14,40 +20,53 @@ function NumberPanel({
 
 }: NumberPanelProps) {
 
-    const [, setVersion] = useState(0);
+    const [info, setInfo] =
+        useState<NumberInfo>();
 
     useEffect(() => {
 
-        return explorer.selection.onChange(() => {
+        const update = (): void => {
 
-            setVersion(v => v + 1);
+            const cell =
+                explorer.selection.getSelectedCell(
+                    explorer.table
+                );
 
-        });
+            setInfo(
+
+                cell
+                    ? explorer.numberAnalyzer.analyze(
+                        cell
+                    )
+                    : undefined
+
+            );
+
+        };
+
+        update();
+
+        return explorer.selection.onChange(
+            update
+        );
 
     }, [explorer]);
-
-    const cell =
-        explorer.selection.getSelectedCell(
-            explorer.table
-        );
 
     return (
 
         <div className="numberDataArea">
 
-            <div className="numberShow">
+            <NumberShow
+                info={info}
+            />
 
-                {cell?.value ?? "-"}
+            <NumberFactors
+                info={info}
+            />
 
-            </div>
-
-            <div>
-
-                {cell
-                    ? `${cell.rowFactor} × ${cell.columnFactor}`
-                    : ""}
-
-            </div>
+            <NumberProperties
+                info={info}
+            />
 
         </div>
 

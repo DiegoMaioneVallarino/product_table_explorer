@@ -13,6 +13,8 @@ import { ModularCurveBuilder } from "../math/modular/ModularCurveBuilder";
 import { VisualState } from "./VisualState";
 import { NumberSystem } from "../math/NumberSystem";
 import { PrimeCache } from "../math/PrimeCache";
+import { NumberAnalyzer } from "../math/analyzers/NumberAnalyzer";
+
 
 export class Explorer {
 
@@ -31,7 +33,9 @@ export class Explorer {
     public readonly pathBuilder: ProductPathBuilder;
 
     public readonly modularCurveBuilder: ModularCurveBuilder;
-
+    
+    public readonly numberAnalyzer: NumberAnalyzer;
+    
     public path = new ProductPath();
 
     public modularCurve = new ModularCurve();
@@ -49,7 +53,9 @@ export class Explorer {
         this.numberSystem = new NumberSystem();
 
         this.primeCache = new PrimeCache();
-
+        
+        this.numberAnalyzer = new NumberAnalyzer();
+        
         this.pathBuilder =
             new ProductPathBuilder(
                 this.table
