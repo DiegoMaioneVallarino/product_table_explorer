@@ -12,15 +12,17 @@ function NumberShow({
 }: NumberShowProps) {
 
     return (
-
+  <div  className="NumberShowArea">
+    <div className="modularWeight">{info?.modularProduct}</div>
         <div
+        
             className={`numberShow ${info?.modularOrderClass ?? ""}`}
         >
 
             {info?.value ?? "-"}
 
         </div>
-
+ </div>
     );
 
 }

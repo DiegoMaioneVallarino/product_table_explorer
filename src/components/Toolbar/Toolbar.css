@@ -4,10 +4,11 @@
 }
 
 .tittleArea {
-    width: 320px;
+       width: 320px;
     height: 100px;
     align-items: center;
     display: grid;
+    float: left;
 }
 
 .logo {
@@ -15,4 +16,39 @@
       width: 269px;
     height: 59px;
     margin: auto;
+}
+
+.modEdit {
+    width: fit-content;
+    margin: auto;
+    height: 100%;
+}
+
+.modIco {
+    float: left;
+    height: 52px;
+    margin-top: 31px;
+    -webkit-text-stroke: .3px #ffffff91;
+    color: #f2f2f2;
+}
+
+.modNumber {
+    float: left;
+    margin-top: 31px;
+    margin-left: 15px;
+    color: #c9c9c900;
+    -webkit-text-stroke: 1px #ffffff8f;
+}
+
+.modEditArea {
+    height: 100px;
+    width: 350px;
+    float: right;
+    font-family: Times New Roman;
+    font-size: 51px;
+}
+
+.modNumber:hover {
+    color: white;
+    cursor: pointer;
 }

@@ -26,17 +26,11 @@ function NumberProperties({
 
                 <span></span>
 
-                <span>{info.modularLength}</span>
+                <div className="numberProperty modularLength" >{info.modularLength}</div>
 
             </div>
 
-            <div className="numberProperty">
-
-                <span></span>
-
-                <span>{info.modularProduct}</span>
-
-            </div>
+           
 
             <div className="numberProperty">
 
@@ -52,7 +46,7 @@ function NumberProperties({
 
             <div className="numberProperty">
 
-                <span></span>
+                <span>Order</span>
 
                 <span>
 

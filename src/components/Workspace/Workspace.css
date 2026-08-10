@@ -80,13 +80,35 @@
     align-items: center;
     display: grid;
     margin-top: 50px;
-    box-shadow: 0 2px 0 0px #ffffff;
-    width: fit-content;
+    box-shadow: 0 2px 0 0px #ffffff17;
+        width: fit-content;
     margin: auto;
     border-radius: 11px;
     padding: 11px;
 }
 
+.numberProperty {
+    width: fit-content;
+    height: fit-content;
+    margin: auto;
+}
+
+.modularWeight {
+    width: fit-content;
+    height: fit-content;
+    float: right;
+    left: -6px;
+    position: relative;
+    color: #ffffff40;
+}
+
+.NumberShowArea {
+    width: fit-content;
+    margin: auto;
+}
+.numberProperty.modularLength {
+    color: #63636387;
+}
 .numberShow.osc {
     text-shadow: 0 0 8px #ff00f1c9;
     background: linear-gradient(
