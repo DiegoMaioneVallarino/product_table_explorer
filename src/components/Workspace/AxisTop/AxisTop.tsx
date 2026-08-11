@@ -1,7 +1,6 @@
 import { useEffect, useRef } from 'react';
 
 import { AxisRenderer } from '../../../canvas/AxisRenderer';
-
 import { Explorer } from '../../../core/Explorer';
 
 interface AxisTopProps {
@@ -9,36 +8,58 @@ interface AxisTopProps {
 }
 
 function AxisTop({ explorer }: AxisTopProps) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const camera = explorer.camera
 
-  useEffect(() => {
+    const canvasRef =
+        useRef<HTMLCanvasElement>(null);
 
-    if (!canvasRef.current) return;
+    const camera =
+        explorer.camera;
 
-    const renderer = new AxisRenderer(
-        canvasRef.current,
-        explorer.camera
+    useEffect(() => {
+
+        if (!canvasRef.current) {
+            return;
+        }
+
+        const renderer =
+            new AxisRenderer(
+                canvasRef.current,
+                camera,
+                explorer.numberFormatter
+            );
+
+        renderer.renderHorizontal();
+
+        const unsubscribe =
+            camera.onChange(() => {
+                renderer.renderHorizontal();
+            });
+
+        const unsubscribeNumberSystem =
+            explorer.numberSystem.onChange(() => {
+                renderer.renderHorizontal();
+            });
+
+        return () => {
+
+            unsubscribe();
+
+            unsubscribeNumberSystem();
+
+        };
+
+    }, [
+        explorer,
+        camera
+    ]);
+
+    return (
+        <canvas
+            ref={canvasRef}
+            className="axis-top"
+        />
     );
 
-    renderer.renderHorizontal();
-
-    const unsubscribe = explorer.camera.onChange(() => {
-        renderer.renderHorizontal();
-    });
-
-    return () => {
-        unsubscribe();
-    };
-
-}, [camera]);
-
-  return (
-    <canvas
-      ref={canvasRef}
-      className="axis-top"
-    />
-  );
 }
 
 export default AxisTop;

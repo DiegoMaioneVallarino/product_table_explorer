@@ -4,27 +4,69 @@ export class NumberSystem {
 
     private coupledNumbers: number[] = [];
 
+private listeners = new Set<() => void>();
+
     constructor() {
 
         this.rebuild();
 
     }
 
-    public setBase(base: number): void {
+    public getBase(): number {
 
-        this.base = base;
-
-        this.rebuild();
+        return this.base;
 
     }
+
+    public setBase(base: number): void {
+
+    if (base === this.base) {
+        return;
+    }
+
+    this.base = base;
+
+    this.rebuild();
+
+    this.notify();
+
+}
+
+
+
+    public onChange(
+        listener: () => void
+    ): () => void {
+
+        this.listeners.add(listener);
+
+        return () => {
+            this.listeners.delete(listener);
+        };
+
+    }
+
+    private notify(): void {
+
+    for (const listener of this.listeners) {
+        listener();
+    }
+
+}
 
     private rebuild(): void {
 
         this.coupledNumbers = [];
 
-        for (let n = 2; n < this.base; n++) {
+        for (
+            let n = 2;
+            n < this.base;
+            n++
+        ) {
 
-            if (this.base % n === 0) {
+            if (
+                this.base % n === 0
+            ) {
 
                 this.coupledNumbers.push(n);
 
@@ -34,17 +76,25 @@ export class NumberSystem {
 
     }
 
-    public getCoupledNumbers(): readonly number[] {
+    public getCoupledNumbers():
+        readonly number[] {
 
         return this.coupledNumbers;
 
     }
 
-    public isCoupledMultiple(value: number): boolean {
+    public isCoupledMultiple(
+        value: number
+    ): boolean {
 
-        for (const coupled of this.coupledNumbers) {
+        for (
+            const coupled
+            of this.coupledNumbers
+        ) {
 
-            if (value % coupled === 0) {
+            if (
+                value % coupled === 0
+            ) {
 
                 return true;
 
@@ -57,3 +107,5 @@ export class NumberSystem {
     }
 
 }
+
+

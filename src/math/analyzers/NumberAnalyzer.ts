@@ -1,95 +1,95 @@
 import type { ProductCell } from "../ProductCell";
 import type { NumberInfo } from "./NumberInfo";
 
+import { NumberFormatter } from "../NumberFormatter";
+
 export class NumberAnalyzer {
 
-   public analyze(
-    cell: ProductCell
-): NumberInfo {
+    constructor(
+        private numberFormatter: NumberFormatter
+    ) {}
 
-    return {
+    public analyze(
+        cell: ProductCell
+    ): NumberInfo {
 
-    value: cell.value,
+        const digits =
+            this.getDigits(cell.value);
 
-    factorA: cell.rowFactor,
+        const modularOrder =
+            this.getModularOrder(digits);
 
-    factorB: cell.columnFactor,
+        return {
 
-    modularLength:
-        this.getModularLength(cell.value),
+            value: cell.value,
 
-    modularProduct:
-        this.getModularProduct(cell.value),
+            factorA: cell.rowFactor,
 
-    modularComplexity:
-        this.getModularComplexity(cell.value),
+            factorB: cell.columnFactor,
 
-    modularOrder:
-        this.getModularOrder(cell.value),
+            modularLength:
+                digits.length,
 
-    modularOrderClass:
-        this.getModularOrderClass(cell.value)
+            modularProduct:
+                this.getModularProduct(digits),
 
-};
+            modularComplexity:
+                this.getModularComplexity(digits),
 
-}
+            modularOrder,
+
+            modularOrderClass:
+                this.getModularOrderClass(
+                    modularOrder
+                )
+
+        };
+
+    }
 
     private getDigits(
         value: number
     ): number[] {
 
-        return value
-            .toString()
+        return this.numberFormatter
+            .format(value)
             .split("")
-            .map(Number);
-
-    }
-
-    private getModularLength(
-        value: number
-    ): number {
-
-        return this.getDigits(value).length;
+            .map(symbol =>
+                parseInt(
+                    symbol,
+                    this.numberFormatter.getBase()
+                )
+            );
 
     }
 
     private getModularProduct(
-        value: number
+        digits: number[]
     ): number {
 
-        return this.getDigits(value).reduce(
-
+        return digits.reduce(
             (sum, digit) =>
-
                 sum + digit,
-
             0
-
         );
 
     }
 
     private getModularComplexity(
-        value: number
+        digits: number[]
     ): number {
 
-        return new Set(
-
-            this.getDigits(value)
-
-        ).size;
+        return new Set(digits).size;
 
     }
 
     private getModularOrder(
-        value: number
-    ): "Ascending"
-      | "Descending"
-      | "Constant"
-      | "Oscillating" {
-
-        const digits =
-            this.getDigits(value);
+        digits: number[]
+    ):
+        | "Ascending"
+        | "Descending"
+        | "Constant"
+        | "Oscillating" {
 
         let hasAscending = false;
 
@@ -109,7 +109,6 @@ export class NumberAnalyzer {
                 hasAscending = true;
 
             }
-
             else if (
                 digits[i] <
                 digits[i - 1]
@@ -150,25 +149,33 @@ export class NumberAnalyzer {
     }
 
     private getModularOrderClass(
-    value: number
-): "asc" | "desc" | "const" | "osc" {
+        order:
+            | "Ascending"
+            | "Descending"
+            | "Constant"
+            | "Oscillating"
+    ):
+        | "asc"
+        | "desc"
+        | "const"
+        | "osc" {
 
-    switch (this.getModularOrder(value)) {
+        switch (order) {
 
-        case "Ascending":
-            return "asc";
+            case "Ascending":
+                return "asc";
 
-        case "Descending":
-            return "desc";
+            case "Descending":
+                return "desc";
 
-        case "Constant":
-            return "const";
+            case "Constant":
+                return "const";
 
-        case "Oscillating":
-            return "osc";
+            case "Oscillating":
+                return "osc";
+
+        }
 
     }
-
-}
 
 }

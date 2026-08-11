@@ -1,28 +1,40 @@
 import type { NumberInfo } from "../../../math/analyzers/NumberInfo";
+import { Explorer } from "../../../core/Explorer";
 
 interface NumberShowProps {
 
     info?: NumberInfo;
 
+    explorer: Explorer;
+
 }
+
 function NumberShow({
 
-    info
+    info,
+    explorer
 
 }: NumberShowProps) {
 
     return (
-  <div  className="NumberShowArea">
-    <div className="modularWeight">{info?.modularProduct}</div>
+
         <div
-        
-            className={`numberShow ${info?.modularOrderClass ?? ""}`}
+            className={
+                `numberShow ${
+                    info?.modularOrderClass ?? ""
+                }`
+            }
         >
 
-            {info?.value ?? "-"}
+            {info
+                ? explorer.numberFormatter.format(
+                    info.value
+                )
+                : "-"
+            }
 
         </div>
- </div>
+
     );
 
 }

@@ -23,34 +23,39 @@ function NumberPanel({
     const [info, setInfo] =
         useState<NumberInfo>();
 
-    useEffect(() => {
+  useEffect(() => {
 
-        const update = (): void => {
+    const update = (): void => {
 
-            const cell =
-                explorer.selection.getSelectedCell(
-                    explorer.table
-                );
-
-            setInfo(
-
-                cell
-                    ? explorer.numberAnalyzer.analyze(
-                        cell
-                    )
-                    : undefined
-
+        const cell =
+            explorer.selection.getSelectedCell(
+                explorer.table
             );
 
-        };
-
-        update();
-
-        return explorer.selection.onChange(
-            update
+        setInfo(
+            cell
+                ? explorer.numberAnalyzer.analyze(cell)
+                : undefined
         );
 
-    }, [explorer]);
+    };
+
+    update();
+
+    const unsubscribeSelection =
+        explorer.selection.onChange(update);
+
+    const unsubscribeNumberSystem =
+        explorer.numberSystem.onChange(update);
+
+    return () => {
+
+        unsubscribeSelection();
+        unsubscribeNumberSystem();
+
+    };
+
+}, [explorer]);
 
     return (
 
@@ -61,8 +66,9 @@ function NumberPanel({
             />
 
             <NumberShow
-                info={info}
-            />
+    info={info}
+    explorer={explorer}
+/>
 
             <NumberProperties
                 info={info}

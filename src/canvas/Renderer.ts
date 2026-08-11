@@ -31,7 +31,13 @@ export class Renderer {
 
     this.ctx = ctx;
 
-    this.unsubscribeCamera = this.camera.onChange(() => {
+    this.unsubscribeCamera =
+    this.camera.onChange(() => {
+        this.render();
+    });
+
+this.unsubscribeNumberSystem =
+    this.explorer.numberSystem.onChange(() => {
         this.render();
     });
 
@@ -41,7 +47,7 @@ export class Renderer {
  
 
   private unsubscribeCamera?: () => void;
-
+private unsubscribeNumberSystem?: () => void;
 private drawCellBackground(
   cell: ProductCell,
   style: CellStyle
@@ -193,14 +199,16 @@ public render(): void {
 
     this.ctx.font = `${this.camera.fontSize}px Arial`;
 
-    this.ctx.fillText(
+   this.ctx.fillText(
 
-        cell.screenLabel,
+    this.explorer.numberFormatter.format(
+        cell.value
+    ),
 
-        this.camera.cellCenterX(cell.column),
-        this.camera.cellCenterY(cell.row)
+    this.camera.cellCenterX(cell.column),
+    this.camera.cellCenterY(cell.row)
 
-    );
+);
 
 }
 
@@ -238,9 +246,11 @@ public render(): void {
 
   }
 
-  public destroy(): void {
+public destroy(): void {
 
     this.unsubscribeCamera?.();
+
+    this.unsubscribeNumberSystem?.();
 
 }
 

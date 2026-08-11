@@ -15,6 +15,7 @@ import { NumberSystem } from "../math/NumberSystem";
 import { PrimeCache } from "../math/PrimeCache";
 import { NumberAnalyzer } from "../math/analyzers/NumberAnalyzer";
 
+import { NumberFormatter } from "../math/NumberFormatter";
 
 export class Explorer {
 
@@ -36,6 +37,8 @@ export class Explorer {
     
     public readonly numberAnalyzer: NumberAnalyzer;
     
+    public readonly numberFormatter: NumberFormatter;
+
     public path = new ProductPath();
 
     public modularCurve = new ModularCurve();
@@ -54,8 +57,15 @@ export class Explorer {
 
         this.primeCache = new PrimeCache();
         
-        this.numberAnalyzer = new NumberAnalyzer();
-        
+        this.numberFormatter =
+    new NumberFormatter(
+        this.numberSystem
+    );
+
+this.numberAnalyzer =
+    new NumberAnalyzer(
+        this.numberFormatter
+    );
         this.pathBuilder =
             new ProductPathBuilder(
                 this.table
@@ -69,27 +79,27 @@ export class Explorer {
     }
 
     public buildPath(
-        cell: ProductCell
-    ): void {
+    cell: ProductCell
+): void {
 
-        this.path =
-            this.pathBuilder.start(
-                cell
-            );
-            this.camera.refresh();
+    this.path =
+        this.pathBuilder.start(
+            cell
+        );
 
-    }
+}
 
-    public buildModularCurve(
-        cell: ProductCell
-    ): void {
+public buildModularCurve(
+    cell: ProductCell
+): void {
 
-        this.modularCurve =
-            this.modularCurveBuilder.build(
-                cell
-            );
-            this.camera.refresh();
+    this.modularCurve =
+        this.modularCurveBuilder.build(
+            cell
+        );
 
-    }
+}
+
+    
 
 }
