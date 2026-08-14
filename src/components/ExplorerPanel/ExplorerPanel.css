@@ -28,7 +28,44 @@
 
 
 
-b {}
+.option-inner-btadd {
+    width: 200px;
+    height: 210px;
+    background: #00000073;
+    position: absolute;
+    margin-top: 211px;
+    margin-left: -59px;
+    BORDER-RADIUS: 21px;
+    backdrop-filter: blur(6px);
+    box-shadow: inset 0 0 0 1px #ffffff14;
+}
+
+.option-inner-btadd-tittle {
+    font-size: 16px;
+    margin-top: 11px;
+}
+
+.option-inner-btadd-addBtArea {
+    /* background: white; */
+    width: 100%;
+    height: 167px;
+    grid-template-rows: 25% 25% 25% 25%;
+    display: grid;
+}
+
+.add-new-bloc-bt {
+    background: red;
+    position: absolute;
+    top: 6px;
+    left: 10px;
+    right: 10px;
+    bottom: 7px;
+    border-radius: 8px;
+}
+
+.option-inner-btadd-addBtAreaBt {
+    position: relative;
+}
 
 .function-formula {
     width: fit-content;
