@@ -17,6 +17,8 @@ import { NumberAnalyzer } from "../math/analyzers/NumberAnalyzer";
 
 import { NumberFormatter } from "../math/NumberFormatter";
 
+import { FunctionEngine } from "../math/functions/FunctionEngine";
+
 export class Explorer {
 
     public readonly camera: Camera;
@@ -42,6 +44,7 @@ export class Explorer {
     public path = new ProductPath();
 
     public modularCurve = new ModularCurve();
+    public readonly functionEngine: FunctionEngine;
 
     constructor() {
 
@@ -61,7 +64,9 @@ export class Explorer {
     new NumberFormatter(
         this.numberSystem
     );
-
+this.functionEngine =
+    new FunctionEngine();
+    
 this.numberAnalyzer =
     new NumberAnalyzer(
         this.numberFormatter

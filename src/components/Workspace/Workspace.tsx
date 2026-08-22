@@ -11,22 +11,30 @@ import GridCanvas from "./GridCanvas/GridCanvas";
 import OverlayCanvas from "./OverlayCanvas/OverlayCanvas";
 
 import NumberPanel from './NumberPanel/NumberPanel';
+import { nearestBoundary } from '../../math/functions/FunctionEngine';
+
+
 
 function Workspace() {
 
     const explorer = useMemo(() => {
 
-        const ex = new Explorer();
-    
-        ex.primeCache.loadFromText(`
-            2 3 5 7 11 13 17 19 23 29
-            31 37 41 43 47 53 59 61
-        `);
-        ex.numberSystem.setBase(22);
+    const ex = new Explorer();
 
-        return ex;
-    
-    }, []);
+    ex.functionEngine.setFunction(
+        x => nearestBoundary(x)
+    );
+
+    ex.numberSystem.setBase(10);
+
+    ex.primeCache.loadFromText(`
+        2 3 5 7 11 13 17 19 23 29
+        31 37 41 43 47 53 59 61
+    `);
+
+    return ex;
+
+}, []);
     const handleSeePath = (): void => {
 
         const cell = explorer.selection.getSelectedCell(

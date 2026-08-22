@@ -40,14 +40,22 @@ this.unsubscribeNumberSystem =
     this.explorer.numberSystem.onChange(() => {
         this.render();
     });
-
-  
+this.unsubscribeFunction =
+    this.explorer.functionEngine.onChange(() => {
+        this.render();
+    });
 }
+
   
  
 
   private unsubscribeCamera?: () => void;
+
+
 private unsubscribeNumberSystem?: () => void;
+private unsubscribeFunction?: () => void;
+
+
 private drawCellBackground(
   cell: ProductCell,
   style: CellStyle
@@ -191,24 +199,43 @@ public render(): void {
   }
 
 
-  private drawCellLabel(cell: ProductCell, style: CellStyle): void {
+private drawCellLabel(
+    cell: ProductCell,
+    style: CellStyle
+): void {
 
-    this.ctx.fillStyle = style.textColor;
-    this.ctx.textAlign = "center";
-    this.ctx.textBaseline = "middle";
+    this.ctx.fillStyle =
+        style.textColor;
 
-    this.ctx.font = `${this.camera.fontSize}px Arial`;
+    this.ctx.textAlign =
+        "center";
 
-   this.ctx.fillText(
+    this.ctx.textBaseline =
+        "middle";
 
-    this.explorer.numberFormatter.format(
-        cell.value
-    ),
+    this.ctx.font =
+        `${this.camera.fontSize}px Arial`;
 
-    this.camera.cellCenterX(cell.column),
-    this.camera.cellCenterY(cell.row)
+    const value =
+        this.explorer.functionEngine.evaluate(
+            cell.value
+        );
 
-);
+    this.ctx.fillText(
+
+        this.explorer.numberFormatter.format(
+            value
+        ),
+
+        this.camera.cellCenterX(
+            cell.column
+        ),
+
+        this.camera.cellCenterY(
+            cell.row
+        )
+
+    );
 
 }
 
@@ -251,6 +278,8 @@ public destroy(): void {
     this.unsubscribeCamera?.();
 
     this.unsubscribeNumberSystem?.();
+
+    this.unsubscribeFunction?.();
 
 }
 

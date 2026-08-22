@@ -27,7 +27,6 @@
 }
 
 
-
 .option-inner-btadd {
     width: 200px;
     height: 210px;
@@ -38,6 +37,9 @@
     BORDER-RADIUS: 21px;
     backdrop-filter: blur(6px);
     box-shadow: inset 0 0 0 1px #ffffff14;
+    font-family: auto;
+    font-size: 19px;
+    font-style: italic;
 }
 
 .option-inner-btadd-tittle {
@@ -125,4 +127,33 @@ div#add-panel-alert {
 .option-bar-bt-ico {
     margin-top: -9px;
     margin-left: 11px;
+}
+
+.add-new-bloc-bt.color-apply {
+    box-shadow: 0 0 0 2.5px #301939;
+    background: #171316;
+    color: #87578a;
+    font-weight: bolder;
+}
+
+.add-new-bloc-bt.add-function {
+    box-shadow: 0 0 0 2.5px #291f09;
+    background: #141311;
+    color: #eada84;
+}
+
+.add-new-bloc-bt.search-prod {
+    box-shadow: 0 0 0 2.5px #002b45;
+    background: #0d1325;
+    color: #4ea8df;
+}
+
+.add-new-bloc-bt.note-add {
+    box-shadow: 0 0 0 2.5px #2a2a2a;
+    background: #1b1b1b;
+}
+
+.add-new-bloc-bt:hover {
+    filter: brightness(1.3);
+    cursor: pointer;
 }
