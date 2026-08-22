@@ -2,62 +2,46 @@ import type { TableFunction } from "./TableFunction";
 export function nearestBoundary(
     value: number
 ): number {
-    const sqrt = Math.sqrt(value)
-
-    let decimalPart = sqrt - Math.floor(sqrt)
-    let nearest = 0
-    if(decimalPart <= .5){
-        nearest=Math.floor(sqrt)
-    }else{
-        nearest=Math.ceil(sqrt)
-    }
-
-    return nearest
-
+   return Math.abs(value)
+        .toString()
+        .split('')
+        .reduce((sum, char) => sum + Number(char), 0)
 }
 export class FunctionEngine {
 
-    private currentFunction?: TableFunction;
+    private function?: (
+        x: number
+    ) => number;
 
     private listeners =
         new Set<() => void>();
 
+
     public setFunction(
-        fn: TableFunction
+        fn: (x: number) => number
     ): void {
 
-        this.currentFunction = fn;
+        this.function = fn;
 
         this.notify();
 
     }
 
-    public clearFunction(): void {
-
-        this.currentFunction =
-            undefined;
-
-        this.notify();
-
-    }
-
-    public hasFunction(): boolean {
-
-        return this.currentFunction !== undefined;
-
-    }
 
     public evaluate(
         value: number
     ): number {
 
-        if (!this.currentFunction) {
+        if (!this.function) {
+
             return value;
+
         }
 
-        return this.currentFunction(value);
+        return this.function(value);
 
     }
+
 
     public onChange(
         listener: () => void
@@ -73,16 +57,18 @@ export class FunctionEngine {
 
     }
 
+
     private notify(): void {
 
-        for (const listener of this.listeners) {
+        for (
+            const listener
+            of this.listeners
+        ) {
 
             listener();
 
         }
 
     }
-
-    
 
 }

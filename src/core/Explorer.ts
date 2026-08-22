@@ -18,6 +18,7 @@ import { NumberAnalyzer } from "../math/analyzers/NumberAnalyzer";
 import { NumberFormatter } from "../math/NumberFormatter";
 
 import { FunctionEngine } from "../math/functions/FunctionEngine";
+import { NumberColorRule } from "../math/color/NumberColorRule";
 
 export class Explorer {
 
@@ -41,6 +42,8 @@ export class Explorer {
     
     public readonly numberFormatter: NumberFormatter;
 
+    public readonly numberColorRule: NumberColorRule;
+    
     public path = new ProductPath();
 
     public modularCurve = new ModularCurve();
@@ -60,13 +63,17 @@ export class Explorer {
 
         this.primeCache = new PrimeCache();
         
+        this.numberColorRule =
+    new NumberColorRule(
+        this.numberSystem
+    );
         this.numberFormatter =
     new NumberFormatter(
         this.numberSystem
     );
 this.functionEngine =
     new FunctionEngine();
-    
+
 this.numberAnalyzer =
     new NumberAnalyzer(
         this.numberFormatter

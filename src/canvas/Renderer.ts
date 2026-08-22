@@ -79,23 +79,47 @@ private drawCellBackground(
 
 }
 
-private drawCell(cell: ProductCell): void {
+private drawCell(
+    cell: ProductCell
+): void {
 
-  const style = this.explorer.visual.getCellStyle(cell);
+    const style =
+        this.explorer.visual.getCellStyle(
+            cell
+        );
 
-  this.drawCellBackground(cell, style);
+    this.drawCellBackground(
+        cell,
+        style
+    );
 
-  this.drawCellHighlight(cell, style);
+    this.drawCellHighlight(
+        cell,
+        style
+    );
 
-  this.drawCellBorder(cell, style);
+    this.drawFunctionColor(
+        cell
+    );
 
-  if (this.camera.showNumbers) {
+    this.drawCellBorder(
+        cell,
+        style
+    );
 
-      this.drawCellLabel(cell, style);
+    if (this.camera.showNumbers) {
 
-  }
+        this.drawCellLabel(
+            cell,
+            style
+        );
+
+    }
 
 }
+
+
+
 private drawCellHighlight(
   cell: ProductCell,
   style: CellStyle
@@ -272,7 +296,46 @@ private drawCellLabel(
     this.render();
 
   }
+private drawFunctionColor(
+    cell: ProductCell
+): void {
 
+    const transformed =
+        this.explorer.functionEngine.evaluate(
+            cell.value
+        );
+
+    const color =
+        this.explorer.numberColorRule.getColor(
+            transformed
+        );
+
+    if (!color) {
+        return;
+    }
+
+    this.ctx.fillStyle = color;
+
+    this.ctx.globalAlpha = 0.35;
+
+    this.ctx.fillRect(
+
+        this.camera.cellLeft(
+            cell.column
+        ),
+
+        this.camera.cellTop(
+            cell.row
+        ),
+
+        this.camera.cellSize,
+        this.camera.cellSize
+
+    );
+
+    this.ctx.globalAlpha = 1;
+
+}
 public destroy(): void {
 
     this.unsubscribeCamera?.();
