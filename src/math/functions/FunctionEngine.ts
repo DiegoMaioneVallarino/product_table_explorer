@@ -2,7 +2,11 @@ import type { TableFunction } from "./TableFunction";
 export function nearestBoundary(
     value: number
 ): number {
-   return Math.abs(value)
+    let first = Math.abs(value)
+        .toString()
+        .split('')
+        .reduce((sum, char) => sum + Number(char), 0)
+   return Math.abs(first)
         .toString()
         .split('')
         .reduce((sum, char) => sum + Number(char), 0)
