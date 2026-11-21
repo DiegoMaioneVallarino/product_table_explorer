@@ -11,6 +11,7 @@ import { ModularCurve } from "../math/modular/ModularCurve";
 import { ModularCurveBuilder } from "../math/modular/ModularCurveBuilder";
 
 import { VisualState } from "./VisualState";
+import { Emitter } from "./Emitter";
 import { NumberSystem } from "../math/NumberSystem";
 import { PrimeCache } from "../math/PrimeCache";
 import { NumberAnalyzer } from "../math/analyzers/NumberAnalyzer";
@@ -23,95 +24,62 @@ import { NumberColorRule } from "../math/color/NumberColorRule";
 export class Explorer {
 
     public readonly camera: Camera;
-
     public readonly selection: Selection;
-
     public readonly table: ProductTable;
-
     public readonly visual: VisualState;
-
     public readonly numberSystem: NumberSystem;
-
     public readonly primeCache: PrimeCache;
-
     public readonly pathBuilder: ProductPathBuilder;
-
     public readonly modularCurveBuilder: ModularCurveBuilder;
-    
     public readonly numberAnalyzer: NumberAnalyzer;
-    
     public readonly numberFormatter: NumberFormatter;
-
     public readonly numberColorRule: NumberColorRule;
-    
-    public path = new ProductPath();
-
-    public modularCurve = new ModularCurve();
     public readonly functionEngine: FunctionEngine;
+
+    public path = new ProductPath();
+    public modularCurve = new ModularCurve();
+
+    /** Se emite al empezar un camino nuevo (el overlay lo anima). */
+    public readonly pathChanged = new Emitter();
+
+    /** Se emite al reemplazar la curva modular (el grid debe repintarse). */
+    public readonly curveChanged = new Emitter();
 
     constructor() {
 
         this.camera = new Camera();
-
         this.selection = new Selection();
-
         this.table = new ProductTable();
-
         this.visual = new VisualState(this);
-
         this.numberSystem = new NumberSystem();
-
         this.primeCache = new PrimeCache();
-        
-        this.numberColorRule =
-    new NumberColorRule(
-        this.numberSystem
-    );
-        this.numberFormatter =
-    new NumberFormatter(
-        this.numberSystem
-    );
-this.functionEngine =
-    new FunctionEngine();
 
-this.numberAnalyzer =
-    new NumberAnalyzer(
-        this.numberFormatter
-    );
-        this.pathBuilder =
-            new ProductPathBuilder(
-                this.table
-            );
-
-        this.modularCurveBuilder =
-            new ModularCurveBuilder(
-                this.table
-            );
+        this.numberColorRule = new NumberColorRule(this.numberSystem);
+        this.numberFormatter = new NumberFormatter(this.numberSystem);
+        this.functionEngine = new FunctionEngine(this.numberSystem);
+        this.numberAnalyzer = new NumberAnalyzer(this.numberFormatter);
+        this.pathBuilder = new ProductPathBuilder(this.table);
+        this.modularCurveBuilder = new ModularCurveBuilder(
+            this.table,
+            this.numberSystem
+        );
 
     }
 
-    public buildPath(
-    cell: ProductCell
-): void {
+    public buildPath(cell: ProductCell): void {
 
-    this.path =
-        this.pathBuilder.start(
-            cell
-        );
+        this.path = this.pathBuilder.start(cell);
 
-}
+        this.pathChanged.emit();
 
-public buildModularCurve(
-    cell: ProductCell
-): void {
+    }
 
-    this.modularCurve =
-        this.modularCurveBuilder.build(
-            cell
-        );
+    public buildModularCurve(cell: ProductCell): void {
 
-}
+        this.modularCurve = this.modularCurveBuilder.build(cell);
 
-    
+        this.curveChanged.emit();
+
+    }
 
 }

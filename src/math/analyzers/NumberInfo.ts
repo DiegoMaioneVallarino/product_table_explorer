@@ -2,6 +2,8 @@ export interface NumberInfo {
 
     value: number;
 
+    base: number;
+
     factorA: number;
     factorB: number;
 

@@ -38,7 +38,7 @@ function NumberProperties({
 
                 <span>
 
-                    {info.modularComplexity}/10
+                    {info.modularComplexity}/{info.base}
 
                 </span>
 

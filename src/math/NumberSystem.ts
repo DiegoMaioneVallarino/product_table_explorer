@@ -20,6 +20,11 @@ private listeners = new Set<() => void>();
 
     public setBase(base: number): void {
 
+    // Number.prototype.toString solo admite bases enteras entre 2 y 36.
+    if (!Number.isInteger(base) || base < 2 || base > 36) {
+        return;
+    }
+
     if (base === this.base) {
         return;
     }

@@ -2,6 +2,7 @@ import type { ProductCell } from "../ProductCell";
 import type { NumberInfo } from "./NumberInfo";
 
 import { NumberFormatter } from "../NumberFormatter";
+import { digitsOf } from "../digits";
 
 export class NumberAnalyzer {
 
@@ -13,8 +14,11 @@ export class NumberAnalyzer {
         cell: ProductCell
     ): NumberInfo {
 
+        const base =
+            this.numberFormatter.getBase();
+
         const digits =
-            this.getDigits(cell.value);
+            digitsOf(cell.value, base);
 
         const modularOrder =
             this.getModularOrder(digits);
@@ -22,6 +26,8 @@ export class NumberAnalyzer {
         return {
 
             value: cell.value,
+
+            base,
 
             factorA: cell.rowFactor,
 
@@ -44,22 +50,6 @@ export class NumberAnalyzer {
                 )
 
         };
-
-    }
-
-    private getDigits(
-        value: number
-    ): number[] {
-
-        return this.numberFormatter
-            .format(value)
-            .split("")
-            .map(symbol =>
-                parseInt(
-                    symbol,
-                    this.numberFormatter.getBase()
-                )
-            );
 
     }
 

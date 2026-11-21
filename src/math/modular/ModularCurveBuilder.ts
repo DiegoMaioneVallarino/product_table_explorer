@@ -1,12 +1,15 @@
 import { ProductCell } from "../ProductCell";
 import { ProductTable } from "../ProductTable";
+import { NumberSystem } from "../NumberSystem";
+import { digitsOf } from "../digits";
 import { ModularCurve } from "./ModularCurve";
 import { ModularStep } from "./ModularStep";
 
 export class ModularCurveBuilder {
 
     constructor(
-        private table: ProductTable
+        private table: ProductTable,
+        private numberSystem: NumberSystem
     ) {}
 
     public build(
@@ -30,18 +33,20 @@ export class ModularCurveBuilder {
 
         let current = start;
 
-        curve.steps.push(
+        curve.add(
             new ModularStep(
                 current,
                 current.value,
                 0
             )
         );
+
+        // Dígitos del valor en la base activa (antes siempre base 10).
         const digits =
-            current.value
-                .toString()
-                .split("")
-                .map(Number);
+            digitsOf(
+                current.value,
+                this.numberSystem.getBase()
+            );
 
         for (const digit of digits) {
 
@@ -54,17 +59,13 @@ export class ModularCurveBuilder {
                     current.column + dir.column
                 );
 
-                curve.steps.push(
-
-                    new ModularStep(
-                
-                        current,
-                        current.value,
-                        curve.steps.length
-                
-                    )
-                
-                );
+            curve.add(
+                new ModularStep(
+                    current,
+                    current.value,
+                    curve.steps.length
+                )
+            );
 
         }
 

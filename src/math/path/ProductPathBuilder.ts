@@ -131,11 +131,6 @@ export class ProductPathBuilder {
             }
     
         }
-        console.log(
-            "Centro:",
-            cell.value,
-            neighbors.map(n => n.value)
-        );
         return neighbors;
     
     }

@@ -1,145 +1,92 @@
 import { Camera } from './Camera';
 import { NumberFormatter } from '../math/NumberFormatter';
 
+import { CanvasSurface } from './CanvasSurface';
+import { FrameRequest } from './FrameRequest';
+
+export type AxisOrientation = 'horizontal' | 'vertical';
+
 export class AxisRenderer {
 
-    private canvas: HTMLCanvasElement;
+    private readonly surface: CanvasSurface;
 
-    private ctx: CanvasRenderingContext2D;
+    private readonly frame = new FrameRequest(() => this.render());
 
     constructor(
         canvas: HTMLCanvasElement,
         private camera: Camera,
-        private numberFormatter: NumberFormatter
+        private numberFormatter: NumberFormatter,
+        private orientation: AxisOrientation
     ) {
 
-        this.canvas = canvas;
+        this.surface = new CanvasSurface(canvas);
 
-        const ctx = canvas.getContext('2d');
-
-        if (!ctx) {
-            throw new Error(
-                'No se pudo obtener el contexto 2D.'
-            );
-        }
-
-        this.ctx = ctx;
+        this.surface.observeResize(() => this.invalidate());
 
     }
 
-    public renderHorizontal(): void {
+    /** Pide un redibujado; varias peticiones en un frame se funden en una. */
+    public invalidate(): void {
 
-        this.resize();
-
-        this.clear();
-
-        const firstCol =
-            this.camera.firstVisibleColumn();
-
-        const cols =
-            this.camera.visibleColumns(
-                this.canvas.width
-            );
-
-        this.ctx.fillStyle = '#383737';
-
-        this.ctx.font =
-            `${this.camera.cellSize * 0.35}px Arial`;
-
-        this.ctx.textAlign = 'center';
-
-        this.ctx.textBaseline = 'middle';
-
-        for (
-            let col = firstCol;
-            col < firstCol + cols;
-            col++
-        ) {
-
-            this.ctx.fillText(
-
-                this.numberFormatter.format(
-                    col + 1
-                ),
-
-                this.camera.cellCenterX(col),
-
-                this.canvas.height / 2
-
-            );
-
-        }
+        this.frame.request();
 
     }
 
-    public renderVertical(): void {
+    public render(): void {
 
-        this.resize();
+        this.frame.cancel();
 
-        this.clear();
+        this.surface.sync();
 
-        const firstRow =
-            this.camera.firstVisibleRow();
+        const { ctx, width, height } = this.surface;
 
-        const rows =
-            this.camera.visibleRows(
-                this.canvas.height
-            );
+        ctx.fillStyle = '#0c0c0c';
+        ctx.fillRect(0, 0, width, height);
 
-        this.ctx.fillStyle = '#383737';
+        ctx.fillStyle = '#383737';
+        ctx.font = `${this.camera.cellSize * 0.35}px Arial`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
 
-        this.ctx.font =
-            `${this.camera.cellSize * 0.35}px Arial`;
+        if (this.orientation === 'horizontal') {
 
-        this.ctx.textAlign = 'center';
+            const first = this.camera.firstVisibleColumn();
+            const count = this.camera.visibleColumns(width);
 
-        this.ctx.textBaseline = 'middle';
+            for (let col = first; col < first + count; col++) {
 
-        for (
-            let row = firstRow;
-            row < firstRow + rows;
-            row++
-        ) {
+                ctx.fillText(
+                    this.numberFormatter.format(col + 1),
+                    this.camera.cellCenterX(col),
+                    height / 2
+                );
 
-            this.ctx.fillText(
+            }
 
-                this.numberFormatter.format(
-                    row + 1
-                ),
+        } else {
 
-                this.canvas.width / 2,
+            const first = this.camera.firstVisibleRow();
+            const count = this.camera.visibleRows(height);
 
-                this.camera.cellCenterY(row)
+            for (let row = first; row < first + count; row++) {
 
-            );
+                ctx.fillText(
+                    this.numberFormatter.format(row + 1),
+                    width / 2,
+                    this.camera.cellCenterY(row)
+                );
+
+            }
 
         }
 
     }
 
-    private resize(): void {
+    public destroy(): void {
 
-        const rect =
-            this.canvas.getBoundingClientRect();
+        this.frame.cancel();
 
-        this.canvas.width =
-            rect.width;
-
-        this.canvas.height =
-            rect.height;
-
-    }
-
-    private clear(): void {
-
-        this.ctx.fillStyle = '#0c0c0c';
-
-        this.ctx.fillRect(
-            0,
-            0,
-            this.canvas.width,
-            this.canvas.height
-        );
+        this.surface.dispose();
 
     }
 

@@ -49,7 +49,10 @@ export class NumberColorRule {
                 return "#006b2e";
 
             default:
-                return undefined;
+                // Bases > 10: reparte los dígitos extra por el círculo cromático.
+                return digit >= 10
+                    ? `hsl(${Math.round((digit * 360) / base)}, 85%, 55%)`
+                    : undefined;
 
         }
 

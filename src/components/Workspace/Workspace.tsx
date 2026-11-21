@@ -11,7 +11,7 @@ import GridCanvas from "./GridCanvas/GridCanvas";
 import OverlayCanvas from "./OverlayCanvas/OverlayCanvas";
 
 import NumberPanel from './NumberPanel/NumberPanel';
-import { nearestBoundary } from '../../math/functions/FunctionEngine';
+import { repeatedDigitSum } from '../../math/digits';
 
 
 
@@ -22,7 +22,7 @@ function Workspace() {
     const ex = new Explorer();
 
     ex.functionEngine.setFunction(
-        x => nearestBoundary(x)
+        (x, base) => repeatedDigitSum(x, base)
     );
 
     ex.numberSystem.setBase(10);

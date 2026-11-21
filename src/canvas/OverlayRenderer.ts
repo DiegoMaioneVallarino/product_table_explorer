@@ -1,34 +1,32 @@
 import { Explorer } from "../core/Explorer";
 import { ProductPathNode } from "../math/path/ProductPathNode";
 
+import { CanvasSurface } from "./CanvasSurface";
+import { FrameRequest } from "./FrameRequest";
+
 export class OverlayRenderer {
 
-    private ctx: CanvasRenderingContext2D;
-    private unsubscribeCamera?: () => void;
-    private unsubscribeSelection?: () => void;
+    private readonly surface: CanvasSurface;
+
+    private readonly frame = new FrameRequest(() => this.render());
+
+    private readonly unsubscribers: Array<() => void> = [];
 
     constructor(
-        private canvas: HTMLCanvasElement,
+        canvas: HTMLCanvasElement,
         private explorer: Explorer
     ) {
 
-        const ctx = canvas.getContext("2d");
+        this.surface = new CanvasSurface(canvas);
 
-        if (!ctx) {
-            throw new Error("No se pudo obtener el contexto.");
-        }
+        const invalidate = (): void => this.invalidate();
 
-        this.ctx = ctx;
+        this.unsubscribers.push(
+            explorer.camera.onChange(invalidate),
+            explorer.selection.onChange(invalidate)
+        );
 
-        this.unsubscribeCamera =
-            this.explorer.camera.onChange(() => {
-                this.render();
-            });
-
-        this.unsubscribeSelection =
-            this.explorer.selection.onChange(() => {
-                this.render();
-            });
+        this.surface.observeResize(invalidate);
 
     }
 
@@ -39,19 +37,29 @@ export class OverlayRenderer {
     private get selection() {
         return this.explorer.selection;
     }
-   
+
+    private get ctx() {
+        return this.surface.ctx;
+    }
+
+    /** Pide un redibujado; varias peticiones en un frame se funden en una. */
+    public invalidate(): void {
+
+        this.frame.request();
+
+    }
+
     public render(): void {
 
-        const rect = this.canvas.getBoundingClientRect();
+        this.frame.cancel();
 
-        this.canvas.width = rect.width;
-        this.canvas.height = rect.height;
+        this.surface.sync();
 
         this.ctx.clearRect(
             0,
             0,
-            this.canvas.width,
-            this.canvas.height
+            this.surface.width,
+            this.surface.height
         );
 
         if (this.selection.getHoverRow() >= 0) {
@@ -108,50 +116,57 @@ export class OverlayRenderer {
         );
 
     }
+
     private drawPath(): void {
 
         if (!this.explorer.path.root) {
             return;
         }
-    
+
         this.drawNode(
             this.explorer.path.root
         );
-    
+
     }
- 
+
     private drawNode(
         node: ProductPathNode
     ): void {
-    
+
         const cell = node.cell;
-    
+
         this.ctx.fillStyle =
             "rgba(255,80,80,0.45)";
-    
+
         this.ctx.fillRect(
-    
+
             this.camera.cellLeft(cell.column),
             this.camera.cellTop(cell.row),
-    
+
             this.camera.cellSize,
             this.camera.cellSize
-    
-        );
-    
-        for (const child of node.children) {
-    
-            this.drawNode(child);
-    
-        }
-    
-    }
 
+        );
+
+        for (const child of node.children) {
+
+            this.drawNode(child);
+
+        }
+
+    }
 
     public destroy(): void {
 
-        this.unsubscribeCamera?.();
-        this.unsubscribeSelection?.();
+        this.frame.cancel();
+
+        this.surface.dispose();
+
+        for (const unsubscribe of this.unsubscribers) {
+            unsubscribe();
+        }
+
+        this.unsubscribers.length = 0;
 
     }
 

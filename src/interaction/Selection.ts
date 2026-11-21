@@ -41,6 +41,11 @@ export class Selection {
 
     public hover(row: number, column: number): void {
 
+        // mousemove dispara decenas de veces por celda: solo avisa si cambió.
+        if (row === this.hoverRow && column === this.hoverColumn) {
+            return;
+        }
+
         this.hoverRow = row;
         this.hoverColumn = column;
 
@@ -58,6 +63,10 @@ export class Selection {
     }
 
     public clearHover(): void {
+
+        if (this.hoverRow === -1 && this.hoverColumn === -1) {
+            return;
+        }
 
         this.hoverRow = -1;
         this.hoverColumn = -1;

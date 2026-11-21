@@ -1,349 +1,166 @@
 import { Explorer } from '../core/Explorer';
-import { ProductCell } from '../math/ProductCell';
 
-import type { CellStyle } from './CellStyle';
+import { CanvasSurface } from './CanvasSurface';
+import { FrameRequest } from './FrameRequest';
 
+/** Por debajo de este tamaño de celda, los bordes de 1px taparían todo. */
+const MIN_CELL_SIZE_FOR_BORDERS = 4;
+
+const CURVE_HIGHLIGHT = 'rgba(0,255,0,0.45)';
+const FUNCTION_COLOR_ALPHA = 0.35;
 
 export class Renderer {
 
-  private canvas: HTMLCanvasElement;
+  private readonly surface: CanvasSurface;
 
-  private ctx: CanvasRenderingContext2D;
+  private readonly frame = new FrameRequest(() => this.render());
 
-  private explorer: Explorer;
-
-
+  private readonly unsubscribers: Array<() => void> = [];
 
   constructor(
-    explorer: Explorer,
-    canvas: HTMLCanvasElement,
+    private readonly explorer: Explorer,
+    canvas: HTMLCanvasElement
+  ) {
 
-) {
+    this.surface = new CanvasSurface(canvas);
 
-    this.canvas = canvas;
-    this.explorer = explorer;
+    const invalidate = (): void => this.invalidate();
 
-    const ctx = canvas.getContext("2d");
-
-    if (!ctx) {
-        throw new Error("No se pudo obtener el contexto 2D.");
-    }
-
-    this.ctx = ctx;
-
-    this.unsubscribeCamera =
-    this.camera.onChange(() => {
-        this.render();
-    });
-
-this.unsubscribeNumberSystem =
-    this.explorer.numberSystem.onChange(() => {
-        this.render();
-    });
-this.unsubscribeFunction =
-    this.explorer.functionEngine.onChange(() => {
-        this.render();
-    });
-}
-
-  
- 
-
-  private unsubscribeCamera?: () => void;
-
-
-private unsubscribeNumberSystem?: () => void;
-private unsubscribeFunction?: () => void;
-
-
-private drawCellBackground(
-  cell: ProductCell,
-  style: CellStyle
-): void {
-
-  if (!style.backgroundColor) {
-      return;
-  }
-
-  this.ctx.fillStyle = style.backgroundColor;
-
-  this.ctx.fillRect(
-
-      this.camera.cellLeft(cell.column),
-      this.camera.cellTop(cell.row),
-
-      this.camera.cellSize,
-      this.camera.cellSize
-
-  );
-
-}
-
-private drawCell(
-    cell: ProductCell
-): void {
-
-    const style =
-        this.explorer.visual.getCellStyle(
-            cell
-        );
-
-    this.drawCellBackground(
-        cell,
-        style
+    this.unsubscribers.push(
+      explorer.camera.onChange(invalidate),
+      explorer.numberSystem.onChange(invalidate),
+      explorer.functionEngine.onChange(invalidate),
+      explorer.curveChanged.subscribe(invalidate)
     );
 
-    this.drawCellHighlight(
-        cell,
-        style
-    );
-
-    this.drawFunctionColor(
-        cell
-    );
-
-    this.drawCellBorder(
-        cell,
-        style
-    );
-
-    if (this.camera.showNumbers) {
-
-        this.drawCellLabel(
-            cell,
-            style
-        );
-
-    }
-
-}
-
-
-
-private drawCellHighlight(
-  cell: ProductCell,
-  style: CellStyle
-): void {
-
-  let color = style.highlightColor;
-
-  if (this.explorer.modularCurve.contains(cell)) {
-
-      color = "rgba(0,255,0,0.45)";
+    this.surface.observeResize(invalidate);
 
   }
 
-  if (!color) {
-      return;
-  }
+  /** Pide un redibujado; varias peticiones en un frame se funden en una. */
+  public invalidate(): void {
 
-  this.ctx.fillStyle = color;
+    this.frame.request();
 
-  this.ctx.fillRect(
-
-      this.camera.cellLeft(cell.column),
-      this.camera.cellTop(cell.row),
-
-      this.camera.cellSize,
-      this.camera.cellSize
-
-  );
-
-}
-
-private get camera() {
-  return this.explorer.camera;
-}
-
-private get table() {
-  return this.explorer.table;
-}
-
-
-
-
-
-
-
-private drawCellBorder(cell: ProductCell, style:CellStyle): void {
-  this.ctx.lineWidth = style.borderWidth;
-
-  this.ctx.strokeStyle = style.borderColor;
-
-  this.ctx.strokeRect(
-
-      this.camera.cellLeft(cell.column),
-      this.camera.cellTop(cell.row),
-
-      this.camera.cellSize,
-      this.camera.cellSize
-
-  );
-
-}
-  private drawVisibleCells(): void {
-
-    this.forEachVisibleCell((cell) => {
-
-        this.drawCell(cell);
-
-    });
-
-}
-
-public render(): void {
-
-  this.resize();
-
-  this.clear();
-
-  this.drawVisibleCells();
-
-}
-  private resize(): void {
-
-    const rect = this.canvas.getBoundingClientRect();
-
-    this.canvas.width = rect.width;
-    this.canvas.height = rect.height;
-
-  }
-
-  private clear(): void {
-
-    this.ctx.fillStyle = '#0c0c0c';
-
-    this.ctx.fillRect(
-      0,
-      0,
-      this.canvas.width,
-      this.canvas.height
-    );
-
-  }
-
-
-private drawCellLabel(
-    cell: ProductCell,
-    style: CellStyle
-): void {
-
-    this.ctx.fillStyle =
-        style.textColor;
-
-    this.ctx.textAlign =
-        "center";
-
-    this.ctx.textBaseline =
-        "middle";
-
-    this.ctx.font =
-        `${this.camera.fontSize}px Arial`;
-
-    const value =
-        this.explorer.functionEngine.evaluate(
-            cell.value
-        );
-
-    this.ctx.fillText(
-
-        this.explorer.numberFormatter.format(
-            value
-        ),
-
-        this.camera.cellCenterX(
-            cell.column
-        ),
-
-        this.camera.cellCenterY(
-            cell.row
-        )
-
-    );
-
-}
-
-  private forEachVisibleCell(
-    callback: (cell: ProductCell) => void
-  ): void {
-  
-      const firstCol = this.camera.firstVisibleColumn();
-      const firstRow = this.camera.firstVisibleRow();
-  
-      const cols = this.camera.visibleColumns(this.canvas.width);
-      const rows = this.camera.visibleRows(this.canvas.height);
-  
-      for (let row = firstRow; row < firstRow + rows; row++) {
-  
-          for (let col = firstCol; col < firstCol + cols; col++) {
-  
-              const cell = this.table.getCell(row, col);
-  
-              if (!cell.isVisible) {
-                  continue;
-              }
-  
-              callback(cell);
-  
-          }
-  
-      }
-  
   }
 
   public redraw(): void {
 
-    this.render();
+    this.invalidate();
 
   }
-private drawFunctionColor(
-    cell: ProductCell
-): void {
 
-    const transformed =
-        this.explorer.functionEngine.evaluate(
-            cell.value
-        );
+  public render(): void {
 
-    const color =
-        this.explorer.numberColorRule.getColor(
-            transformed
-        );
+    this.frame.cancel();
 
-    if (!color) {
-        return;
+    this.surface.sync();
+
+    const { ctx, width, height } = this.surface;
+
+    const {
+      camera,
+      table,
+      visual,
+      functionEngine,
+      numberColorRule,
+      numberFormatter,
+      modularCurve
+    } = this.explorer;
+
+    ctx.fillStyle = '#0c0c0c';
+    ctx.fillRect(0, 0, width, height);
+
+    const cellSize = camera.cellSize;
+    const showBorders = cellSize >= MIN_CELL_SIZE_FOR_BORDERS;
+    const showLabels = camera.showNumbers;
+
+    if (showLabels) {
+      ctx.font = `${camera.fontSize}px Arial`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
     }
 
-    this.ctx.fillStyle = color;
+    const firstRow = camera.firstVisibleRow();
+    const firstCol = camera.firstVisibleColumn();
 
-    this.ctx.globalAlpha = 0.35;
+    const endRow = firstRow + camera.visibleRows(height);
+    const endCol = firstCol + camera.visibleColumns(width);
 
-    this.ctx.fillRect(
+    for (let row = Math.max(0, firstRow); row < endRow; row++) {
 
-        this.camera.cellLeft(
-            cell.column
-        ),
+      // Solo existe el triángulo column <= row: ni siquiera creamos el resto.
+      const colEnd = Math.min(endCol, row + 1);
 
-        this.camera.cellTop(
-            cell.row
-        ),
+      for (let col = Math.max(0, firstCol); col < colEnd; col++) {
 
-        this.camera.cellSize,
-        this.camera.cellSize
+        const cell = table.getCell(row, col);
 
-    );
+        const style = visual.getCellStyle(cell);
 
-    this.ctx.globalAlpha = 1;
+        const x = camera.cellLeft(col);
+        const y = camera.cellTop(row);
 
-}
-public destroy(): void {
+        if (style.backgroundColor) {
+          ctx.fillStyle = style.backgroundColor;
+          ctx.fillRect(x, y, cellSize, cellSize);
+        }
 
-    this.unsubscribeCamera?.();
+        const highlight =
+          modularCurve.contains(cell)
+            ? CURVE_HIGHLIGHT
+            : style.highlightColor;
 
-    this.unsubscribeNumberSystem?.();
+        if (highlight) {
+          ctx.fillStyle = highlight;
+          ctx.fillRect(x, y, cellSize, cellSize);
+        }
 
-    this.unsubscribeFunction?.();
+        // La función se evalúa una sola vez por celda (color y etiqueta).
+        const transformed = functionEngine.evaluate(cell.value);
 
-}
+        const color = numberColorRule.getColor(transformed);
+
+        if (color) {
+          ctx.fillStyle = color;
+          ctx.globalAlpha = FUNCTION_COLOR_ALPHA;
+          ctx.fillRect(x, y, cellSize, cellSize);
+          ctx.globalAlpha = 1;
+        }
+
+        if (showBorders) {
+          ctx.lineWidth = style.borderWidth;
+          ctx.strokeStyle = style.borderColor;
+          ctx.strokeRect(x, y, cellSize, cellSize);
+        }
+
+        if (showLabels) {
+          ctx.fillStyle = style.textColor;
+          ctx.fillText(
+            numberFormatter.format(transformed),
+            x + cellSize / 2,
+            y + cellSize / 2
+          );
+        }
+
+      }
+
+    }
+
+  }
+
+  public destroy(): void {
+
+    this.frame.cancel();
+
+    this.surface.dispose();
+
+    for (const unsubscribe of this.unsubscribers) {
+      unsubscribe();
+    }
+
+    this.unsubscribers.length = 0;
+
+  }
 
 }

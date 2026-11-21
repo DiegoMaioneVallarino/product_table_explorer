@@ -113,8 +113,8 @@ public zoomOut(): void {
     // ---------- Conversión ----------
 
     zoomAt(
-        screenX,
-        screenY,
+        screenX: number,
+        screenY: number,
         zoomStep: number
 
     ): void {

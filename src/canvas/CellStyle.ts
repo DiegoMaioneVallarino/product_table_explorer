@@ -9,6 +9,4 @@ export interface CellStyle {
 
     textColor: string;
 
-    showLabel: boolean;
-
 }

@@ -1,28 +1,19 @@
 import type { TableFunction } from "./TableFunction";
-export function nearestBoundary(
-    value: number
-): number {
-    let first = Math.abs(value)
-        .toString()
-        .split('')
-        .reduce((sum, char) => sum + Number(char), 0)
-   return Math.abs(first)
-        .toString()
-        .split('')
-        .reduce((sum, char) => sum + Number(char), 0)
-}
+import type { NumberSystem } from "../NumberSystem";
+
 export class FunctionEngine {
 
-    private function?: (
-        x: number
-    ) => number;
+    private function?: TableFunction;
 
     private listeners =
         new Set<() => void>();
 
+    constructor(
+        private readonly numberSystem: NumberSystem
+    ) {}
 
     public setFunction(
-        fn: (x: number) => number
+        fn: TableFunction
     ): void {
 
         this.function = fn;
@@ -30,7 +21,6 @@ export class FunctionEngine {
         this.notify();
 
     }
-
 
     public evaluate(
         value: number
@@ -42,10 +32,12 @@ export class FunctionEngine {
 
         }
 
-        return this.function(value);
+        return this.function(
+            value,
+            this.numberSystem.getBase()
+        );
 
     }
-
 
     public onChange(
         listener: () => void
@@ -60,7 +52,6 @@ export class FunctionEngine {
         };
 
     }
-
 
     private notify(): void {
 

@@ -12,9 +12,6 @@ function AxisLeft({ explorer }: AxisLeftProps) {
     const canvasRef =
         useRef<HTMLCanvasElement>(null);
 
-    const camera =
-        explorer.camera;
-
     useEffect(() => {
 
         if (!canvasRef.current) {
@@ -24,34 +21,32 @@ function AxisLeft({ explorer }: AxisLeftProps) {
         const renderer =
             new AxisRenderer(
                 canvasRef.current,
-                camera,
-                explorer.numberFormatter
+                explorer.camera,
+                explorer.numberFormatter,
+                'vertical'
             );
 
-        renderer.renderVertical();
+        renderer.render();
 
-        const unsubscribe =
-            camera.onChange(() => {
-                renderer.renderVertical();
-            });
+        const invalidate = (): void => renderer.invalidate();
+
+        const unsubscribeCamera =
+            explorer.camera.onChange(invalidate);
 
         const unsubscribeNumberSystem =
-            explorer.numberSystem.onChange(() => {
-                renderer.renderVertical();
-            });
+            explorer.numberSystem.onChange(invalidate);
 
         return () => {
 
-            unsubscribe();
+            unsubscribeCamera();
 
             unsubscribeNumberSystem();
 
+            renderer.destroy();
+
         };
 
-    }, [
-        explorer,
-        camera
-    ]);
+    }, [explorer]);
 
     return (
         <canvas

@@ -12,9 +12,6 @@ function AxisTop({ explorer }: AxisTopProps) {
     const canvasRef =
         useRef<HTMLCanvasElement>(null);
 
-    const camera =
-        explorer.camera;
-
     useEffect(() => {
 
         if (!canvasRef.current) {
@@ -24,34 +21,32 @@ function AxisTop({ explorer }: AxisTopProps) {
         const renderer =
             new AxisRenderer(
                 canvasRef.current,
-                camera,
-                explorer.numberFormatter
+                explorer.camera,
+                explorer.numberFormatter,
+                'horizontal'
             );
 
-        renderer.renderHorizontal();
+        renderer.render();
 
-        const unsubscribe =
-            camera.onChange(() => {
-                renderer.renderHorizontal();
-            });
+        const invalidate = (): void => renderer.invalidate();
+
+        const unsubscribeCamera =
+            explorer.camera.onChange(invalidate);
 
         const unsubscribeNumberSystem =
-            explorer.numberSystem.onChange(() => {
-                renderer.renderHorizontal();
-            });
+            explorer.numberSystem.onChange(invalidate);
 
         return () => {
 
-            unsubscribe();
+            unsubscribeCamera();
 
             unsubscribeNumberSystem();
 
+            renderer.destroy();
+
         };
 
-    }, [
-        explorer,
-        camera
-    ]);
+    }, [explorer]);
 
     return (
         <canvas
